@@ -19,7 +19,7 @@ import javafx.util.Duration;
 
 public class Main extends Application {
     public static void animateMouvment(Node node,int x,int y){
-        final TranslateTransition translateAnimation = new TranslateTransition(Duration.millis(50),node);
+        final TranslateTransition translateAnimation = new TranslateTransition(Duration.millis(20),node);
         translateAnimation.setAutoReverse(true);
         translateAnimation.setByX(x);
         translateAnimation.setByY(y);
@@ -37,6 +37,10 @@ public class Main extends Application {
         BackgroundSize bs = new BackgroundSize(1280,720,false,false,false,false);
         root.setBackground(new Background(new BackgroundImage(back,null,null,null,bs)));
         ImageView pistol = new ImageView();
+        ImageView demon = new ImageView();
+        demon.setImage(new Image(this.getClass().getResource("Images/demon.gif").toExternalForm()));
+        demon.setFitWidth(150);
+        demon.setFitHeight(106);
         pistol.setFocusTraversable(true);
         Image images[] = {new Image(this.getClass().getResource("Images/Pistol_Vertical.png").toExternalForm()),
                 new Image(this.getClass().getResource("Images/Pistol_Horisontal.png").toExternalForm()),
@@ -199,7 +203,7 @@ public class Main extends Application {
         pistol.setFitWidth(80);
         pistol.setFitHeight(90);
         primaryStage.setTitle("Hello World");
-        root.getChildren().add(pistol);
+        root.getChildren().addAll(pistol,demon);
         root.setMaxSize(1280,720);
         root.setMinSize(1280,720);
         primaryStage.setScene(new Scene(root, 1280, 720));
