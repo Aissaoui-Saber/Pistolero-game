@@ -22,8 +22,8 @@ public class Demon{
         vie = 100;
         sexe = true;
         degat = 20;
-
     }
+
 
     public ImageView getImage() {
         return image;

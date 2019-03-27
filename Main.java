@@ -37,15 +37,14 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception{
         Demon demon = new Demon(150,150);
-        Pistol pistol = new Pistol();
         Pane root = new Pane();
+        Pistol pistol = new Pistol(root);
         Image back = new Image(this.getClass().getResource("Images/background.jpg").toExternalForm());
         BackgroundSize bs = new BackgroundSize(1280,720,false,false,false,false);
         root.setBackground(new Background(new BackgroundImage(back,null,null,null,bs)));
 
-
         primaryStage.setTitle("PISTOLERO");
-        root.getChildren().addAll(pistol.getImage(),demon.getImage());
+        root.getChildren().addAll(demon.getImage());
         primaryStage.setScene(new Scene(root, 1280, 720));
         primaryStage.setResizable(false);
         primaryStage.show();

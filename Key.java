@@ -6,25 +6,22 @@ import javafx.scene.input.KeyCode;
 
 public class Key {
     private SimpleBooleanProperty pressed;
-    private SimpleBooleanProperty released;
     private KeyCode code;
 
     public Key(KeyCode keyCode){
         this.pressed = new SimpleBooleanProperty();
-        this.released = new SimpleBooleanProperty();
         this.pressed.setValue(false);
-        this.released.setValue(false);
         this.code = keyCode;
     }
-    public void setPressed(boolean v){
-        this.pressed.setValue(v);
+    public void setPressed(){
+        this.pressed.setValue(true);
     }
     public boolean isPressed() {
         return pressed.getValue();
     }
 
-    public void setReleased(boolean released) {
-        this.released.set(released);
+    public void setReleased() {
+        this.pressed.setValue(false);
     }
 
     public KeyCode getCode() {
@@ -36,8 +33,5 @@ public class Key {
     }
     public SimpleBooleanProperty getPressedProprety(){
         return this.pressed;
-    }
-    public SimpleBooleanProperty getReleasedProperty(){
-        return this.released;
     }
 }
