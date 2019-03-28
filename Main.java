@@ -4,7 +4,9 @@ import javafx.animation.*;
 import javafx.application.Application;
 import javafx.beans.property.DoubleProperty;
 import javafx.event.EventHandler;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -22,29 +24,10 @@ import java.util.Timer;
 
 
 public class Main extends Application {
-    public static void animateMouvment(Node node,int x,int y){
-        final TranslateTransition translateAnimation = new TranslateTransition(Duration.millis(20),node);
-        translateAnimation.setAutoReverse(true);
-        translateAnimation.setByX(x);
-        translateAnimation.setByY(y);
-        translateAnimation.setInterpolator(Interpolator.LINEAR);
-        translateAnimation.play();
-    }
-
-    public static int rand(int minIncl,int maxIncl){
-        return minIncl + (int)(Math.random() * ((maxIncl - minIncl) + 1));
-    }
     @Override
     public void start(Stage primaryStage) throws Exception{
-        Demon demon = new Demon(150,150);
-        Pane root = new Pane();
-        Pistol pistol = new Pistol(root);
-        Image back = new Image(this.getClass().getResource("Images/background.jpg").toExternalForm());
-        BackgroundSize bs = new BackgroundSize(1280,720,false,false,false,false);
-        root.setBackground(new Background(new BackgroundImage(back,null,null,null,bs)));
-
+        Parent root = FXMLLoader.load(getClass().getResource("Menu.fxml"));
         primaryStage.setTitle("PISTOLERO");
-        root.getChildren().addAll(demon.getImage());
         primaryStage.setScene(new Scene(root, 1280, 720));
         primaryStage.setResizable(false);
         primaryStage.show();

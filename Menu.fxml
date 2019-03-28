@@ -1,0 +1,25 @@
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.GridPane?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.layout.VBox?>
+<StackPane fx:controller="sample.Menu"
+           xmlns:fx="http://javafx.com/fxml" alignment="center" stylesheets="@Style.css"
+           >
+    <ImageView>
+            <Image url="@Images/menuBackground.jpg"/>
+    </ImageView>
+    <VBox alignment="CENTER" fx:id="menuLabels" focusTraversable="true" onKeyPressed="#changeCursor">
+        <children>
+            <Label styleClass="menuLabel" style="-fx-underline:true;">Jouer</Label>
+            <Label styleClass="menuLabel">Sauvgarder</Label>
+            <Label styleClass="menuLabel">Charger</Label>
+            <Label styleClass="menuLabel">Option</Label>
+            <Label styleClass="menuLabel">Quiter</Label>
+        </children>
+    </VBox>
+</StackPane>

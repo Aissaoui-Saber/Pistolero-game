@@ -33,37 +33,7 @@ public class Demon{
     }
 
     public void deplacer(int direction){
-        switch (direction){
-            case 0:
-                if ((image.getY() - 1)>-1){
-                    //Main.animateMouvment(this.image, 0,-10);//NORD
-                    this.image.setY(this.image.getY()-1);
-                }
-                break;
-            case 1:
-                Main.animateMouvment(this.image,10,-10);//NORD-EST
-                break;
-            case 2:
-                Main.animateMouvment(this.image,10,0 );//EST
-                break;
-            case 3:
-                Main.animateMouvment(this.image,10,10);//SUD-EST
-                break;
-            case 4:
-                Main.animateMouvment(this.image,0,10);//SUD
-                break;
-            case 5:
-                Main.animateMouvment(this.image,-10,10);//SUD-OUEST
-                break;
-            case 6:
-                if(image.getX()>0){
-                    Main.animateMouvment(this.image,-10,0);//OUEST
-                }
-                break;
-            case 7:
-                Main.animateMouvment(this.image,-10,-10);//NORD-OUEST
-                break;
-        }
+
     }
     public boolean isDead(){
         if (this.vie > 0){
