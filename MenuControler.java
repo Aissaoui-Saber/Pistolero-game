@@ -1,20 +1,31 @@
 package sample;
 
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
 import java.awt.event.ActionEvent;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class Menu implements Initializable {
+public class MenuControler implements Initializable {
     @FXML
     private VBox menuLabels;
+    @FXML
+    private StackPane mainPane;
 
+    private BorderPane gameScene;
+    private GameControler gameControler;
+    private FXMLLoader loader;
 
     private int menuIndex = 0;
     @FXML
@@ -44,7 +55,14 @@ public class Menu implements Initializable {
         if (event.getCode() == KeyCode.ENTER){
             switch (menuIndex){
                 case 0:
-                    //START GAME
+                    loader.setLocation(getClass().getResource("Game.fxml"));
+                    try {
+                        gameScene = loader.load();
+                    }catch (IOException e){
+                        e.printStackTrace();
+                    }
+                    mainPane.getChildren().setAll(gameScene);
+                    gameControler = loader.getController();
                     break;
                 case 1:
                     //LOAD GAME
@@ -65,6 +83,6 @@ public class Menu implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
+        loader = new FXMLLoader();
     }
 }

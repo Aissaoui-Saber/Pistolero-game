@@ -15,7 +15,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
 
-public class Pistol extends Pane {
+public class Pistol {
     private Image images[] = {new Image(this.getClass().getResource("Images/Pistol_Vertical.png").toExternalForm()),
             new Image(this.getClass().getResource("Images/Pistol_Horisontal.png").toExternalForm()),
             new Image(this.getClass().getResource("Images/Pistol_Diagonal_Right.png").toExternalForm()),
@@ -30,18 +30,14 @@ public class Pistol extends Pane {
     AnimationTimer downTimer;
     AnimationTimer leftTimer;
 
-    private Key up = new Key(KeyCode.UP);
-    private Key down = new Key(KeyCode.DOWN);
-    private Key left = new Key(KeyCode.LEFT);
-    private Key right = new Key(KeyCode.RIGHT);
+    private Key up = GameConfig.getInstance().getUpKey();
+    private Key down = GameConfig.getInstance().getDownKey();
+    private Key left = GameConfig.getInstance().getLeftKey();
+    private Key right = GameConfig.getInstance().getRightKey();
 
     private double vie;
-    private int ball_x,ball_y;
-    private Pane p;
-    //public Label l;
-    //public boolean table[] = {false,false,false,false};
 
-    public Pistol(Pane root){
+    public Pistol(){
         //INITIALISATION DE PISTOLET
         pistol = new ImageView();
         pistol.setFocusTraversable(true);
@@ -51,12 +47,7 @@ public class Pistol extends Pane {
         pistol.setX(600);
         pistol.setY(600);
         speed = 6;
-        ball_x = (int)(pistol.getX()+(pistol.getFitWidth()/2)-5);
-        ball_y = (int)pistol.getY()-20;
-        p = root;
-        p.getChildren().add(pistol);
-
-
+        pistol.requestFocus();
         //LES ANIMATIONS DES DEPLACEMENTS
         upTimer = new AnimationTimer() {
             @Override
@@ -123,10 +114,11 @@ public class Pistol extends Pane {
                 }
             }
         });
+
         pistol.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent event) {
-                if (event.getCode() == KeyCode.UP){
+                if (event.getCode() == up.getCode()){
                     up.setPressed();
                     if (left.isPressed()){
                         pistol.setImage(images[3]);
@@ -136,7 +128,7 @@ public class Pistol extends Pane {
                         pistol.setImage(images[0]);
                     }
                 }
-                if (event.getCode() == KeyCode.DOWN){
+                if (event.getCode() == down.getCode()){
                     down.setPressed();
                     if (left.isPressed()){
                         pistol.setImage(images[2]);
@@ -146,7 +138,7 @@ public class Pistol extends Pane {
                         pistol.setImage(images[0]);
                     }
                 }
-                if (event.getCode() == KeyCode.LEFT){
+                if (event.getCode() == left.getCode()){
                     left.setPressed();
                     if (up.isPressed()){
                         pistol.setImage(images[3]);
@@ -156,7 +148,7 @@ public class Pistol extends Pane {
                         pistol.setImage(images[1]);
                     }
                 }
-                if (event.getCode() == KeyCode.RIGHT){
+                if (event.getCode() == right.getCode()){
                     right.setPressed();
                     if (up.isPressed()){
                         pistol.setImage(images[2]);
@@ -174,7 +166,7 @@ public class Pistol extends Pane {
         pistol.setOnKeyReleased(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent event) {
-                if (event.getCode() == KeyCode.UP){
+                if (event.getCode() == up.getCode()){
                     up.setReleased();
                     if (left.isPressed()){
                         pistol.setImage(images[3]);
@@ -184,7 +176,7 @@ public class Pistol extends Pane {
                         pistol.setImage(images[0]);
                     }
                 }
-                if (event.getCode() == KeyCode.DOWN){
+                if (event.getCode() == down.getCode()){
                     down.setReleased();
                     if (left.isPressed()){
                         pistol.setImage(images[2]);
@@ -194,7 +186,7 @@ public class Pistol extends Pane {
                         pistol.setImage(images[0]);
                     }
                 }
-                if (event.getCode() == KeyCode.LEFT){
+                if (event.getCode() == left.getCode()){
                     left.setReleased();
                     if (up.isPressed()){
                         pistol.setImage(images[3]);
@@ -204,7 +196,7 @@ public class Pistol extends Pane {
                         pistol.setImage(images[1]);
                     }
                 }
-                if (event.getCode() == KeyCode.RIGHT){
+                if (event.getCode() == right.getCode()){
                     right.setReleased();
                     if (up.isPressed()){
                         pistol.setImage(images[2]);
@@ -229,32 +221,21 @@ public class Pistol extends Pane {
     private void moveUp(){
         if (this.pistol.getY()-speed > 0)
             this.pistol.setY(this.pistol.getY()-speed);
-        ball_x = (int)(pistol.getX()+(pistol.getFitWidth()/2)-5);
-        ball_y = (int)pistol.getY()-20;
     }
     private void moveRight(){
         if(this.pistol.getX()+speed < 1210)
             this.pistol.setX(this.pistol.getX()+speed);
-        ball_x = (int)(pistol.getX()+(pistol.getFitWidth()/2)-5);
-        ball_y = (int)pistol.getY()-20;
     }
     private void moveDown(){
         if (this.pistol.getY()+speed < 640)
             this.pistol.setY(this.pistol.getY()+speed);
-        ball_x = (int)(pistol.getX()+(pistol.getFitWidth()/2)-5);
-        ball_y = (int)pistol.getY()-20;
     }
     private void moveLeft(){
         if (this.pistol.getX()-speed > 0)
             this.pistol.setX(this.pistol.getX()-speed);
-        ball_x = (int)(pistol.getX()+(pistol.getFitWidth()/2)-5);
-        ball_y = (int)pistol.getY()-20;
     }
 
     public void fire(){
-        Ball b;
-        b = new Ball(ball_x,ball_y);
-        p.getChildren().add(b.getBallImageView());
 
     }
 }

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?><config>
+    <keys>
+        <up>Up</up>
+        <down>Down</down>
+        <left>Left</left>
+        <right>Right</right>
+        <fire>Space</fire>
+    </keys>
+</config>
