@@ -2,9 +2,13 @@ package sample;
 
 import javafx.animation.AnimationTimer;
 
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
+import javafx.scene.Group;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -14,6 +18,8 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
+import javax.naming.Binding;
+
 
 public class Pistol {
     private Image images[] = {new Image(this.getClass().getResource("Images/Pistol_Vertical.png").toExternalForm()),
@@ -22,22 +28,27 @@ public class Pistol {
             new Image(this.getClass().getResource("Images/Pistol_Diagonal_Left.png").toExternalForm())};
 
     private ImageView pistol;
-
+    private Group g;
     private int speed;
+    private IntegerProperty nbrBalls;
 
     AnimationTimer upTimer;
     AnimationTimer rightTimer;
     AnimationTimer downTimer;
     AnimationTimer leftTimer;
 
+    private IntegerProperty ballOutX;
+    private IntegerProperty ballOutY;
+
     private Key up = GameConfig.getInstance().getUpKey();
     private Key down = GameConfig.getInstance().getDownKey();
     private Key left = GameConfig.getInstance().getLeftKey();
     private Key right = GameConfig.getInstance().getRightKey();
+    private Key fire = GameConfig.getInstance().getFireKey();
 
     private double vie;
 
-    public Pistol(){
+    public Pistol(int nBalls){
         //INITIALISATION DE PISTOLET
         pistol = new ImageView();
         pistol.setFocusTraversable(true);
@@ -47,7 +58,17 @@ public class Pistol {
         pistol.setX(600);
         pistol.setY(600);
         speed = 6;
+        nbrBalls = new SimpleIntegerProperty(nBalls);
         pistol.requestFocus();
+        g = new Group();
+        g.getChildren().add(pistol);
+
+        ballOutX = new SimpleIntegerProperty();
+        ballOutY = new SimpleIntegerProperty();
+
+        ballOutX.bind(Bindings.add(pistol.xProperty(),35));
+        ballOutY.bind(pistol.yProperty());
+
         //LES ANIMATIONS DES DEPLACEMENTS
         upTimer = new AnimationTimer() {
             @Override
@@ -114,6 +135,14 @@ public class Pistol {
                 }
             }
         });
+        fire.getPressedProprety().addListener(new ChangeListener<Boolean>() {
+            @Override
+            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                if (newValue){
+                    fire();
+                }
+            }
+        });
 
         pistol.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
@@ -158,8 +187,8 @@ public class Pistol {
                         pistol.setImage(images[1]);
                     }
                 }
-                if (event.getCode() == KeyCode.SPACE){
-                    fire();
+                if (event.getCode() == fire.getCode()){
+                    fire.setPressed();
                 }
             }
         });
@@ -206,16 +235,16 @@ public class Pistol {
                         pistol.setImage(images[1]);
                     }
                 }
-                if (event.getCode() == KeyCode.ESCAPE){
-
+                if (event.getCode() == fire.getCode()){
+                    fire.setReleased();
                 }
                 pistol.setImage(images[0]);
             }
         });
     }
 
-    public ImageView getImage() {
-        return pistol;
+    public Group getPistol(){
+        return g;
     }
     //DEPLACEMENT
     private void moveUp(){
@@ -234,8 +263,15 @@ public class Pistol {
         if (this.pistol.getX()-speed > 0)
             this.pistol.setX(this.pistol.getX()-speed);
     }
-
+    public IntegerProperty nbrBallsProperty(){
+        return this.nbrBalls;
+    }
     public void fire(){
-
+        if (nbrBalls.get() == -1){
+            g.getChildren().add((new Ball(ballOutX.get(),ballOutY.get())).getBallImageView());
+        }else if (nbrBalls.get() > 0){
+            g.getChildren().add((new Ball(ballOutX.get(),ballOutY.get())).getBallImageView());
+            nbrBalls.set(nbrBalls.get()-1);
+        }
     }
 }

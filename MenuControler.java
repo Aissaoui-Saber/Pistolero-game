@@ -7,10 +7,7 @@ import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 
 import java.awt.event.ActionEvent;
 import java.io.IOException;
@@ -23,7 +20,7 @@ public class MenuControler implements Initializable {
     @FXML
     private StackPane mainPane;
 
-    private BorderPane gameScene;
+    private Pane gameScene;
     private GameControler gameControler;
     private FXMLLoader loader;
 

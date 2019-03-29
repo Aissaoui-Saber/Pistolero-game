@@ -21,4 +21,5 @@
             <Label styleClass="menuLabel">Quiter</Label>
         </children>
     </VBox>
+
 </StackPane>
