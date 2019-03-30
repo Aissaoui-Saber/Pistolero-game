@@ -5,10 +5,12 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
 
+import javax.swing.text.html.ImageView;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.net.URL;

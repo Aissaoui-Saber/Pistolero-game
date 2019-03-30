@@ -16,17 +16,21 @@
     <ImageView>
         <Image url="@Images/background.jpg"/>
     </ImageView>
-    <HBox layoutX="20" layoutY="690" style="-fx-background-color:rgba(43, 43, 43, 0.6);" alignment="CENTER">
+    <HBox layoutX="20" layoutY="680" style="-fx-background-color:rgba(43, 43, 43, 0.6);" alignment="CENTER" >
         <Label text="" styleClass="partieLabels" fx:id="nbrBallLabel" ></Label>
-        <ImageView fitWidth="10" fitHeight="20">
+        <ImageView fitWidth="15" fitHeight="30">
             <Image url="@Images/Bullet.png"/>
         </ImageView>
-        <ImageView fitWidth="10" fitHeight="20">
+        <ImageView fitWidth="15" fitHeight="30">
             <Image url="@Images/Bullet.png"/>
         </ImageView>
-        <ImageView fitWidth="10" fitHeight="20">
+        <ImageView fitWidth="15" fitHeight="30">
             <Image url="@Images/Bullet.png"/>
+        </ImageView>
+
+        <Label text="  0/0 " styleClass="partieLabels" fx:id="nbrDemonsLabel" ></Label>
+        <ImageView fitWidth="40" fitHeight="35">
+            <Image url="@Images/demon.gif"/>
         </ImageView>
     </HBox>
-
 </Pane>
