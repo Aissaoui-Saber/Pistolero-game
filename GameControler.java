@@ -27,10 +27,9 @@ public class GameControler implements Initializable {
     private Label nbrDemonsLabel = new Label();
 
     Partie partie;
-    Ball b = null;
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        partie = new Partie(28,20);
+        partie = new Partie(-1,20);
 
         //NOMBRE DE BALLS LABEL---------------------------------------------------------
         if (partie.getPistolet().nbrBallsProperty.get() != -1){
@@ -45,6 +44,7 @@ public class GameControler implements Initializable {
                 nbrBallLabel.setText(newValue+" ");
             }
         });
+
         //-------------------------------------------------------------------------------
         //NOMBRE DE DEMONS LABEL---------------------------------------------------------
         int nbrDemons = partie.getDemons().size();
@@ -67,7 +67,6 @@ public class GameControler implements Initializable {
             gameScene.getChildren().add(((Demon) partie.getDemons().get(i)).getImage());
         }
         gameScene.getChildren().add(partie.getPistolet().getPistol());
-        gameScene.getChildren().add(partie.b.getBallImageView());
         gameScene.getChildren().add(n);
         //TIR----------------------------------------------------------------------------------------------------------
         GameConfig.getInstance().getFireKey().getPressedProprety().addListener(new ChangeListener<Boolean>() {
@@ -75,10 +74,16 @@ public class GameControler implements Initializable {
             public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
                 if (newValue){
                     if (partie.getPistolet().nbrBallsProperty.get() > 0){
-                        partie.b = new Ball(partie.getPistolet().ballOutXProperty.get(),partie.getPistolet().ballOutYProperty.get());
-                        gameScene.getChildren().add(partie.b.getBallImageView());
-                        partie.b.start();
+                        partie.getBalls().add(new Ball(partie.getPistolet().ballOutXProperty.get(),partie.getPistolet().ballOutYProperty.get()));
+                        ballColusion(partie.getBalls().get(partie.getBalls().size()-1));
+                        gameScene.getChildren().add(partie.getBalls().get(partie.getBalls().size()-1).getBallImageView());
+                        partie.getBalls().get(partie.getBalls().size()-1).start();
                         partie.getPistolet().nbrBallsProperty.set(partie.getPistolet().nbrBallsProperty.get()-1);
+                    }else if (partie.getPistolet().nbrBallsProperty.get() == -1){
+                        partie.getBalls().add(new Ball(partie.getPistolet().ballOutXProperty.get(),partie.getPistolet().ballOutYProperty.get()));
+                        ballColusion(partie.getBalls().get(partie.getBalls().size()-1));
+                        gameScene.getChildren().add(partie.getBalls().get(partie.getBalls().size()-1).getBallImageView());
+                        partie.getBalls().get(partie.getBalls().size()-1).start();
                     }
                 }
             }
@@ -86,4 +91,25 @@ public class GameControler implements Initializable {
         //-------------------------------------------------------------------------------------------------------------
         partie.lancer();
     }
+    private void ballColusion(Ball b){
+        Thread t= new Thread(new Runnable() {
+            @Override
+            public void run() {
+                for(int i=0;i<partie.getDemons().size();i++){
+                    int k = i;
+                    partie.getBalls().get(partie.getBalls().size()-1).getBallImageView().yProperty().addListener(new ChangeListener<Number>() {
+                        @Override
+                        public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+                            if (b.getBallImageView().getBoundsInParent().intersects(((Demon)(partie.getDemons().get(k))).getImage().getBoundsInParent())){
+                                ((Demon)(partie.getDemons().get(k))).blesser(100);
+                                b.stop();
+                            }
+                        }
+                    });
+                }
+            }
+        });
+        t.start();
+    }
+
 }

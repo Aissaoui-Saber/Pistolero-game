@@ -16,13 +16,14 @@ public class Partie {
     private int nbrDemons;
     public IntegerProperty nbrDemonsMorts;
     private ArrayList<Demon> demons;
-    public Ball b;
+    public ArrayList<Ball> balls;
 
     public Partie(int nBall,int nDemons){
         nbrDemons = nDemons;
         pistolet = new Pistol(nBall);
-        b = new Ball(0,0);
-        b.hide();
+        balls = new ArrayList<Ball>();
+        //b = new Ball(0,0);
+        //b.hide();
         nbrBall = nBall;
         nbrDemonsMorts = new SimpleIntegerProperty(0);
         demons = new ArrayList<Demon>();
@@ -35,12 +36,6 @@ public class Partie {
                 public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
                     if (((Demon) demons.get(k)).intersects(pistolet.getPistolImage())){
                         pistolet.blesser(100);
-                    }
-                    if (b != null){
-                        if (((Demon) demons.get(k)).intersects(b.getBallImageView())){
-                            b.stop();
-                            ((Demon) demons.get(k)).blesser(100);
-                        }
                     }
                 }
             });
@@ -93,8 +88,8 @@ public class Partie {
     public ArrayList getDemons() {
         return demons;
     }
-    public Ball getBall(){
-        return this.b;
+    public ArrayList<Ball> getBalls(){
+        return this.balls;
     }
     private int random(int minIncl,int maxIncl){
         return minIncl + (int)(Math.random() * ((maxIncl - minIncl) + 1));

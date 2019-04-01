@@ -56,13 +56,19 @@ public class Demon{
         if (this.vie == 0){
             this.deadProperty.set(true);
             mouvment.stop();
-            image.setVisible(false);
+            //image.setVisible(false);
+            image.setY(1100);
         }
     }
 
     private void moveDown(){
         if (image.getY() < 720){
-            image.setY(image.getY() + demonSpeed);
+            if (image.getY() <0){
+                image.setY(image.getY() + 20);
+            }else {
+                image.setY(image.getY() + demonSpeed);
+            }
+
         }else{
             mouvment.stop();
         }
