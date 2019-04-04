@@ -8,15 +8,15 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.layout.VBox?>
 <StackPane fx:controller="sample.MenuControler"
-           xmlns:fx="http://javafx.com/fxml" alignment="center" stylesheets="@Style.css" fx:id="mainPane">
+           xmlns:fx="http://javafx.com/fxml" alignment="center" stylesheets="@Style.css" fx:id="menuPane">
     <ImageView>
             <Image url="@Images/menuBackground.jpg"/>
     </ImageView>
     <VBox alignment="CENTER" fx:id="menuLabels" focusTraversable="true" onKeyPressed="#changeCursor">
         <children>
-            <Label styleClass="menuLabel" style="-fx-underline:true;">Jouer</Label>
-            <Label styleClass="menuLabel">Sauvgarder</Label>
-            <Label styleClass="menuLabel">Charger</Label>
+            <Label styleClass="menuLabel" style="-fx-underline:true;">Nouvelle Partie</Label>
+            <Label styleClass="menuLabel">Charger Partie</Label>
+            <Label styleClass="menuLabel">Sauvgarder Partie</Label>
             <Label styleClass="menuLabel">Option</Label>
             <Label styleClass="menuLabel">Quiter</Label>
         </children>

@@ -19,19 +19,23 @@ public class Ball {
     private ImageView ball;
     private int ballSpeed = 20;
     private AnimationTimer mouvment;
+    private double degat;
+    private boolean blocked;
 
-    public Ball(int x,int y){
+    public Ball(int x,int y,double Degat){
         ball = new ImageView(Data.getData().bulletIMG());
         ball.setX(x);
         ball.setY(y);
         ball.setFitWidth(10);
         ball.setFitHeight(20);
+        blocked = false;
         mouvment = new AnimationTimer() {
             @Override
             public void handle(long now) {
                 moveToTop();
             }
         };
+        degat = Degat;
     }
 
     public ImageView getBallImageView() {
@@ -56,5 +60,21 @@ public class Ball {
     }
     public void hide(){
         this.getBallImageView().setVisible(false);
+    }
+
+    public double getDegat() {
+        return degat;
+    }
+
+    public void setDegat(double degat) {
+        this.degat = degat;
+    }
+
+    public boolean isBlocked() {
+        return blocked;
+    }
+
+    public void setBlocked(boolean blocked) {
+        this.blocked = blocked;
     }
 }

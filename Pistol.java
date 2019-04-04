@@ -44,6 +44,7 @@ public class Pistol {
     private Key left = GameConfig.getInstance().getLeftKey();
     private Key right = GameConfig.getInstance().getRightKey();
     private Key fire = GameConfig.getInstance().getFireKey();
+    private Key pause = GameConfig.getInstance().getPauseKey();
 
     private double vie;
 
@@ -134,18 +135,11 @@ public class Pistol {
                 }
             }
         });
-        fire.getPressedProprety().addListener(new ChangeListener<Boolean>() {
-            @Override
-            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-                if (newValue){
-                    fire();
-                }
-            }
-        });
 
         pistol.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent event) {
+
                 if (event.getCode() == up.getCode()){
                     up.setPressed();
                     if (left.isPressed()){
@@ -188,6 +182,9 @@ public class Pistol {
                 }
                 if (event.getCode() == fire.getCode()){
                     fire.setPressed();
+                }
+                if (event.getCode() == pause.getCode()){
+                    GameConfig.getInstance().getPauseKey().setPressed();
                 }
             }
         });
@@ -236,6 +233,9 @@ public class Pistol {
                 }
                 if (event.getCode() == fire.getCode()){
                     fire.setReleased();
+                }
+                if (event.getCode() == pause.getCode()){
+                    pause.setReleased();
                 }
                 pistol.setImage(images[0]);
             }

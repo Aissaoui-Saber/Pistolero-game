@@ -19,14 +19,24 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.awt.*;
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.Timer;
 
 
 public class Main extends Application {
+    public static RootControler rootControler;
     @Override
     public void start(Stage primaryStage) throws Exception{
-        Parent root = FXMLLoader.load(getClass().getResource("Menu.fxml"));
+        Parent root = new Pane();
+        FXMLLoader rootLoader = new FXMLLoader();
+        rootLoader.setLocation(getClass().getResource("Root.fxml"));
+        try {
+            root = rootLoader.load();
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+        rootControler = rootLoader.getController();
         primaryStage.setTitle("PISTOLERO");
         primaryStage.setScene(new Scene(root, 1280, 720));
         primaryStage.setResizable(false);

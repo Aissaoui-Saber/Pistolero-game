@@ -1,31 +1,38 @@
 package sample;
 
 import javafx.animation.AnimationTimer;
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.scene.Group;
 import javafx.scene.Node;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.VBox;
+
+import javax.naming.Binding;
 
 
 public class Demon{
-    private double vie;
     private boolean sexe;
     private double degat;
     private ImageView image;
     private BooleanProperty deadProperty;
     private int demonSpeed;
     private AnimationTimer mouvment;
+    private HealthBar vie;
     public Demon(int x,int y){
         image = new ImageView();
+        image.setX(x);
+        image.setY(y);
+        vie = new HealthBar(150);
         image.setImage(Data.getData().demon1IMG());
         image.setFitWidth(150);
         image.setFitHeight(106);
-        image.setX(x);
-        image.setY(y);
-        vie = 100;
+
         sexe = true;
         degat = 20;
         deadProperty = new SimpleBooleanProperty(true);
@@ -36,12 +43,14 @@ public class Demon{
                 moveDown();
             }
         };
+        vie.getHealthBar().layoutXProperty().bind(image.xProperty());
+        vie.getHealthBar().layoutYProperty().bind(Bindings.add(image.yProperty(),106));
         //mouvment.start();
         deadProperty.set(false);
     }
 
 
-    public ImageView getImage() {
+    public ImageView getDemonImage() {
         return image;
     }
 
@@ -51,9 +60,9 @@ public class Demon{
     public BooleanProperty DeadProperty(){
         return this.deadProperty;
     }
-    public void blesser(int value){
-        this.vie-=value;
-        if (this.vie == 0){
+    public void blesser(double value){
+        vie.setValue(vie.getValue()-value);
+        if (vie.getValue() <= 0){
             this.deadProperty.set(true);
             mouvment.stop();
             //image.setVisible(false);
@@ -73,6 +82,11 @@ public class Demon{
             mouvment.stop();
         }
     }
+
+    public HealthBar getVie() {
+        return vie;
+    }
+
     public boolean intersects(Node n){
         return this.image.getBoundsInParent().intersects(n.getBoundsInParent());
     }

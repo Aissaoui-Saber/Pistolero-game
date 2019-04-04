@@ -1,5 +1,8 @@
 package sample;
 
+import com.sun.glass.events.KeyEvent;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.scene.Node;
 import javafx.scene.input.KeyCode;
 import org.w3c.dom.Document;
@@ -24,6 +27,7 @@ public class GameConfig {
     private Key leftKey;
     private Key rightKey;
     private Key fireKey;
+    private Key pauseKey;
     private static final String configFilePath = "src/sample/Config.xml";
 
     private GameConfig(){
@@ -69,12 +73,20 @@ public class GameConfig {
                     break;
                 }
             }
+            nodeValue = doc.getElementsByTagName("pause").item(0).getTextContent();
+            for (KeyCode keyCode : KeyCode.values()) {
+                if (keyCode.getName().equals(nodeValue)){
+                    pauseKey = new Key(KeyCode.getKeyCode(nodeValue));
+                    break;
+                }
+            }
         } catch (Exception e) {
             upKey = new Key(KeyCode.UP);
             downKey = new Key(KeyCode.DOWN);
             leftKey = new Key(KeyCode.LEFT);
             rightKey = new Key(KeyCode.RIGHT);
             fireKey = new Key(KeyCode.SPACE);
+            pauseKey = new Key(KeyCode.ESCAPE);
         }
     }
     public void saveChanges(){
@@ -88,6 +100,7 @@ public class GameConfig {
             doc.getElementsByTagName("left").item(0).setTextContent(leftKey.getCode().getName());
             doc.getElementsByTagName("right").item(0).setTextContent(rightKey.getCode().getName());
             doc.getElementsByTagName("fire").item(0).setTextContent(fireKey.getCode().getName());
+            doc.getElementsByTagName("pause").item(0).setTextContent(pauseKey.getCode().getName());
 
             // write the content into xml file
             TransformerFactory transformerFactory = TransformerFactory.newInstance();
@@ -114,7 +127,11 @@ public class GameConfig {
     private static GameConfig instance = new GameConfig();
 
     public static GameConfig getInstance(){
-        return instance;
+        if (instance != null){
+            return instance;
+        }else {
+            return new GameConfig();
+        }
     }
 
     public Key getUpKey() {
@@ -136,6 +153,14 @@ public class GameConfig {
         return fireKey;
     }
 
+    public Key getPauseKey() {
+        return pauseKey;
+    }
+
+
+    public void setPauseKey(KeyCode pauseKey) {
+        this.pauseKey.setCode(pauseKey);
+    }
 
     public void setUpKey(KeyCode upKey) {
         this.upKey.setCode(upKey);

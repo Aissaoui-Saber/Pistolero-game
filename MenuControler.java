@@ -19,12 +19,7 @@ import java.util.ResourceBundle;
 public class MenuControler implements Initializable {
     @FXML
     private VBox menuLabels;
-    @FXML
-    private StackPane mainPane;
 
-    private Pane gameScene;
-    private GameControler gameControler;
-    private FXMLLoader loader;
 
     private int menuIndex = 0;
     @FXML
@@ -54,19 +49,14 @@ public class MenuControler implements Initializable {
         if (event.getCode() == KeyCode.ENTER){
             switch (menuIndex){
                 case 0:
-                    loader.setLocation(getClass().getResource("Game.fxml"));
-                    try {
-                        gameScene = loader.load();
-                    }catch (IOException e){
-                        e.printStackTrace();
-                    }
-                    mainPane.getChildren().setAll(gameScene);
-                    gameControler = loader.getController();
-                    break;
-                case 1:
-                    //LOAD GAME
+                    Main.rootControler.goToGameScene();
+                    Main.rootControler.gameControler.nouvellePartie(-1,1000);
+                    Main.rootControler.gameControler.startGame();
                     break;
                 case 2:
+                    //LOAD GAME
+                    break;
+                case 1:
                     //SAVE GAME
                     break;
                 case 3:
@@ -78,10 +68,12 @@ public class MenuControler implements Initializable {
                     break;
             }
         }
+        if (event.getCode() == KeyCode.ESCAPE){
+            Main.rootControler.goToGameScene();
+        }
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        loader = new FXMLLoader();
     }
 }
