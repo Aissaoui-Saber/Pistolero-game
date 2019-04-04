@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+<StackPane fx:controller="sample.NouvellePartieControler"
+           xmlns:fx="http://javafx.com/fxml" alignment="center" stylesheets="@Style.css" fx:id="newGamePane">
+    <ImageView>
+        <Image url="@Images/menuBackground.jpg"/>
+    </ImageView>
+    <VBox alignment="CENTER" fx:id="nouvellePartieLabels" focusTraversable="true" onKeyPressed="#changeCursor">
+        <children>
+            <Label styleClass="menuLabel" style="-fx-underline:true;" fx:id="nbrBall">Nombre de Balls &lt; 5 &gt;</Label>
+            <Label styleClass="menuLabel" fx:id="nbrDemon">Nombre de démons &lt; 1 &gt;</Label>
+            <Label styleClass="menuLabel">Lancer</Label>
+            <Label styleClass="menuLabel">Retour</Label>
+        </children>
+    </VBox>
+
+</StackPane>

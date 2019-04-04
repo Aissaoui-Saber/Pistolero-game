@@ -49,9 +49,9 @@ public class MenuControler implements Initializable {
         if (event.getCode() == KeyCode.ENTER){
             switch (menuIndex){
                 case 0:
-                    Main.rootControler.goToGameScene();
-                    Main.rootControler.gameControler.nouvellePartie(-1,1000);
-                    Main.rootControler.gameControler.startGame();
+                    Main.rootControler.goToNouvellePartieScene();
+                    //Main.rootControler.gameControler.nouvellePartie(80,20);
+                    //Main.rootControler.gameControler.startGame();
                     break;
                 case 2:
                     //LOAD GAME

@@ -11,21 +11,27 @@ import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 
+import javax.swing.text.html.ImageView;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
 public class GameControler implements Initializable {
     @FXML
-    private Pane gameScene;
+    public Pane gameScene;
     @FXML
     private Label nbrBallLabel = new Label();
     @FXML
     private Label nbrDemonsLabel = new Label();
+    @FXML
+    private HBox hbox;
+    @FXML
+    private ImageView backImg;
 
-    private Partie partie;
+    public Partie partie;
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
@@ -78,7 +84,12 @@ public class GameControler implements Initializable {
         //-------------------------------------------------------------------------------
         //NOMBRE DE DEMONS LABEL---------------------------------------------------------
         int nbrDemons = partie.getDemons().size();
-        nbrDemonsLabel.setText("  "+partie.nbrDemonsMorts.get()+"/"+nbrDemons+" ");
+        if (nDemons > -1){
+            nbrDemonsLabel.setText("  "+partie.nbrDemonsMorts.get()+"/"+nDemons+" ");
+        }else {
+            nbrDemonsLabel.setText("∞ ");
+        }
+
         partie.nbrDemonsMorts.addListener(new ChangeListener<Number>() {
             @Override
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
@@ -157,5 +168,13 @@ public class GameControler implements Initializable {
 
     public void sauvgarderPartie(){
 
+    }
+
+    public void clearScene(){
+        for (int i=1;i<this.gameScene.getChildren().size();i++){
+            if (!this.gameScene.getChildren().get(i).equals(hbox)){
+                this.gameScene.getChildren().remove(i);
+            }
+        }
     }
 }

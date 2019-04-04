@@ -17,17 +17,18 @@ public class RootControler implements Initializable {
     @FXML
     private StackPane rootScene;//LA RACINE
 
-    private Parent gameScene,menuScene;
+    private Parent gameScene,menuScene,nouvellePartieScene;
 
     public GameControler gameControler;
     public MenuControler menuControler;
+    public NouvellePartieControler nouvellePartieControler;
 
-    private FXMLLoader menuLoader,gameLoader;
+    private FXMLLoader menuLoader,gameLoader,nouvellePartieLoader;
 
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
+        //MENU-----------------------------------------------------------
         menuLoader = new FXMLLoader();
         menuLoader.setLocation(getClass().getResource("Menu.fxml"));
         try {
@@ -36,7 +37,9 @@ public class RootControler implements Initializable {
             e.printStackTrace();
         }
         menuControler = menuLoader.getController();
+        //---------------------------------------------------------------
 
+        //GAME-----------------------------------------------------------
         gameLoader = new FXMLLoader();
         gameLoader.setLocation(getClass().getResource("Game.fxml"));
         try {
@@ -45,6 +48,18 @@ public class RootControler implements Initializable {
             e.printStackTrace();
         }
         gameControler = gameLoader.getController();
+        //---------------------------------------------------------------
+
+        //NOUVELLE PARTIE------------------------------------------------
+        nouvellePartieLoader = new FXMLLoader();
+        nouvellePartieLoader.setLocation(getClass().getResource("NouvellePartie.fxml"));
+        try {
+            nouvellePartieScene = nouvellePartieLoader.load();
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+        nouvellePartieControler = nouvellePartieLoader.getController();
+        //---------------------------------------------------------------
 
         goToMenuScene();
     }
@@ -56,5 +71,8 @@ public class RootControler implements Initializable {
         rootScene.getChildren().clear();
         rootScene.getChildren().add(menuScene);
     }
-
+    public void goToNouvellePartieScene(){
+        rootScene.getChildren().clear();
+        rootScene.getChildren().add(nouvellePartieScene);
+    }
 }

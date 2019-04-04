@@ -16,7 +16,7 @@
     <ImageView>
         <Image url="@Images/background.jpg"/>
     </ImageView>
-    <HBox layoutX="20" layoutY="680" style="-fx-background-color:rgba(43, 43, 43, 0.6);" alignment="CENTER" >
+    <HBox layoutX="20" layoutY="680" style="-fx-background-color:rgba(43, 43, 43, 0.6);" alignment="CENTER" fx:id="hbox">
         <Label text="" styleClass="partieLabels" fx:id="nbrBallLabel" ></Label>
         <ImageView fitWidth="15" fitHeight="30">
             <Image url="@Images/Bullet.png"/>
