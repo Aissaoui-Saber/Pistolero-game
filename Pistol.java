@@ -3,7 +3,9 @@ package sample;
 import javafx.animation.AnimationTimer;
 
 import javafx.beans.binding.Bindings;
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -27,9 +29,7 @@ public class Pistol {
             Data.getData().pistolDiagonalRightIMG(),Data.getData().pistolDiagonalLeftIMG()};
 
     private ImageView pistol;
-    private Group g;
     private int speed;
-    public IntegerProperty nbrBallsProperty;
 
     AnimationTimer upTimer;
     AnimationTimer rightTimer;
@@ -46,7 +46,9 @@ public class Pistol {
     private Key fire = GameConfig.getInstance().getFireKey();
     private Key pause = GameConfig.getInstance().getPauseKey();
 
-    private double vie;
+    private Thread explosion;
+
+    public BooleanProperty vivant;
 
     public Pistol(int nBalls){
         //INITIALISATION DE PISTOLET
@@ -58,10 +60,22 @@ public class Pistol {
         pistol.setX(600);
         pistol.setY(600);
         speed = 10;
-        nbrBallsProperty = new SimpleIntegerProperty(nBalls);
+
         pistol.requestFocus();
-        g = new Group();
-        g.getChildren().add(pistol);
+
+        vivant = new SimpleBooleanProperty(true);
+
+        explosion = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(600);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                pistol.setY(1000);
+            }
+        });
 
         ballOutXProperty = new SimpleIntegerProperty();
         ballOutYProperty = new SimpleIntegerProperty();
@@ -139,49 +153,50 @@ public class Pistol {
         pistol.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent event) {
-
-                if (event.getCode() == up.getCode()){
-                    up.setPressed();
-                    if (left.isPressed()){
-                        pistol.setImage(images[3]);
-                    }else if (right.isPressed()){
-                        pistol.setImage(images[2]);
-                    }else {
-                        pistol.setImage(images[0]);
+                if (vivant.get()) {
+                    if (event.getCode() == up.getCode()) {
+                        up.setPressed();
+                        if (left.isPressed()) {
+                            pistol.setImage(images[3]);
+                        } else if (right.isPressed()) {
+                            pistol.setImage(images[2]);
+                        } else {
+                            pistol.setImage(images[0]);
+                        }
                     }
-                }
-                if (event.getCode() == down.getCode()){
-                    down.setPressed();
-                    if (left.isPressed()){
-                        pistol.setImage(images[2]);
-                    }else if(right.isPressed()){
-                        pistol.setImage(images[3]);
-                    }else {
-                        pistol.setImage(images[0]);
+                    if (event.getCode() == down.getCode()) {
+                        down.setPressed();
+                        if (left.isPressed()) {
+                            pistol.setImage(images[2]);
+                        } else if (right.isPressed()) {
+                            pistol.setImage(images[3]);
+                        } else {
+                            pistol.setImage(images[0]);
+                        }
                     }
-                }
-                if (event.getCode() == left.getCode()){
-                    left.setPressed();
-                    if (up.isPressed()){
-                        pistol.setImage(images[3]);
-                    }else if (down.isPressed()){
-                        pistol.setImage(images[2]);
-                    }else {
-                        pistol.setImage(images[1]);
+                    if (event.getCode() == left.getCode()) {
+                        left.setPressed();
+                        if (up.isPressed()) {
+                            pistol.setImage(images[3]);
+                        } else if (down.isPressed()) {
+                            pistol.setImage(images[2]);
+                        } else {
+                            pistol.setImage(images[1]);
+                        }
                     }
-                }
-                if (event.getCode() == right.getCode()){
-                    right.setPressed();
-                    if (up.isPressed()){
-                        pistol.setImage(images[2]);
-                    }else if (down.isPressed()){
-                        pistol.setImage(images[3]);
-                    }else {
-                        pistol.setImage(images[1]);
+                    if (event.getCode() == right.getCode()) {
+                        right.setPressed();
+                        if (up.isPressed()) {
+                            pistol.setImage(images[2]);
+                        } else if (down.isPressed()) {
+                            pistol.setImage(images[3]);
+                        } else {
+                            pistol.setImage(images[1]);
+                        }
                     }
-                }
-                if (event.getCode() == fire.getCode()){
-                    fire.setPressed();
+                    if (event.getCode() == fire.getCode()) {
+                        fire.setPressed();
+                    }
                 }
                 if (event.getCode() == pause.getCode()){
                     GameConfig.getInstance().getPauseKey().setPressed();
@@ -191,97 +206,93 @@ public class Pistol {
         pistol.setOnKeyReleased(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent event) {
-                if (event.getCode() == up.getCode()){
-                    up.setReleased();
-                    if (left.isPressed()){
-                        pistol.setImage(images[3]);
-                    }else if (right.isPressed()){
-                        pistol.setImage(images[2]);
-                    }else {
-                        pistol.setImage(images[0]);
+                if (vivant.get()) {
+                    if (event.getCode() == up.getCode()) {
+                        up.setReleased();
+                        if (left.isPressed()) {
+                            pistol.setImage(images[3]);
+                        } else if (right.isPressed()) {
+                            pistol.setImage(images[2]);
+                        } else {
+                            pistol.setImage(images[0]);
+                        }
                     }
-                }
-                if (event.getCode() == down.getCode()){
-                    down.setReleased();
-                    if (left.isPressed()){
-                        pistol.setImage(images[2]);
-                    }else if(right.isPressed()){
-                        pistol.setImage(images[3]);
-                    }else {
-                        pistol.setImage(images[0]);
+                    if (event.getCode() == down.getCode()) {
+                        down.setReleased();
+                        if (left.isPressed()) {
+                            pistol.setImage(images[2]);
+                        } else if (right.isPressed()) {
+                            pistol.setImage(images[3]);
+                        } else {
+                            pistol.setImage(images[0]);
+                        }
                     }
-                }
-                if (event.getCode() == left.getCode()){
-                    left.setReleased();
-                    if (up.isPressed()){
-                        pistol.setImage(images[3]);
-                    }else if (down.isPressed()){
-                        pistol.setImage(images[2]);
-                    }else {
-                        pistol.setImage(images[1]);
+                    if (event.getCode() == left.getCode()) {
+                        left.setReleased();
+                        if (up.isPressed()) {
+                            pistol.setImage(images[3]);
+                        } else if (down.isPressed()) {
+                            pistol.setImage(images[2]);
+                        } else {
+                            pistol.setImage(images[1]);
+                        }
                     }
-                }
-                if (event.getCode() == right.getCode()){
-                    right.setReleased();
-                    if (up.isPressed()){
-                        pistol.setImage(images[2]);
-                    }else if (down.isPressed()){
-                        pistol.setImage(images[3]);
-                    }else {
-                        pistol.setImage(images[1]);
+                    if (event.getCode() == right.getCode()) {
+                        right.setReleased();
+                        if (up.isPressed()) {
+                            pistol.setImage(images[2]);
+                        } else if (down.isPressed()) {
+                            pistol.setImage(images[3]);
+                        } else {
+                            pistol.setImage(images[1]);
+                        }
                     }
+                    if (event.getCode() == fire.getCode()) {
+                        fire.setReleased();
+                    }
+                    if (event.getCode() == pause.getCode()) {
+                        pause.setReleased();
+                    }
+                    pistol.setImage(images[0]);
                 }
-                if (event.getCode() == fire.getCode()){
-                    fire.setReleased();
-                }
-                if (event.getCode() == pause.getCode()){
-                    pause.setReleased();
-                }
-                pistol.setImage(images[0]);
             }
         });
     }
 
-    public Group getPistol(){
-        return g;
-    }
-    public ImageView getPistolImage(){
+    public ImageView getPistol(){
         return pistol;
     }
     //DEPLACEMENT
     private void moveUp(){
-        if (this.pistol.getY()-speed > 0)
-            this.pistol.setY(this.pistol.getY()-speed);
-    }
-    private void moveRight(){
-        if(this.pistol.getX()+speed < 1210)
-            this.pistol.setX(this.pistol.getX()+speed);
-    }
-    private void moveDown(){
-        if (this.pistol.getY()+speed < 640)
-            this.pistol.setY(this.pistol.getY()+speed);
-    }
-    private void moveLeft(){
-        if (this.pistol.getX()-speed > 0)
-            this.pistol.setX(this.pistol.getX()-speed);
-    }
-    public void fire(){
-        /*
-        if (nbrBalls.get() == -1){
-            g.getChildren().add((new Ball(ballOutX.get(),ballOutY.get())).getBallImageView());
-        }else if (nbrBalls.get() > 0){
-            g.getChildren().add((new Ball(ballOutX.get(),ballOutY.get())).getBallImageView());
-            nbrBalls.set(nbrBalls.get()-1);
-        }*/
-    }
-    public void blesser(int value){
-        this.vie -=value;
-        if (vie <= 0){
-            //g.setVisible(false);
-            System.out.println("Blessée");
+        if (vivant.get()){
+            if (this.pistol.getY()-speed > 0)
+                this.pistol.setY(this.pistol.getY()-speed);
         }
     }
-    public boolean intersects(Node n){
+    private void moveRight(){
+        if (vivant.get()) {
+            if (this.pistol.getX() + speed < 1210)
+                this.pistol.setX(this.pistol.getX() + speed);
+        }
+    }
+    private void moveDown() {
+        if (vivant.get()) {
+            if (this.pistol.getY() + speed < 640)
+                this.pistol.setY(this.pistol.getY() + speed);
+        }
+    }
+    private void moveLeft(){
+        if (vivant.get()){
+            if (this.pistol.getX() - speed > 0)
+                this.pistol.setX(this.pistol.getX() - speed);
+        }
+    }
+    public void tuer(){
+        vivant.set(false);
+        pistol.setImage(Data.getData().explosionIMG());
+        explosion.start();
+    }
+    public boolean intersect(Node n){
         return this.pistol.getBoundsInParent().intersects(n.getBoundsInParent());
     }
 }

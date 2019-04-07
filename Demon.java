@@ -11,7 +11,9 @@ import javafx.scene.Node;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import sun.awt.windows.ThemeReader;
 
 import javax.naming.Binding;
 
@@ -24,6 +26,7 @@ public class Demon{
     private int demonSpeed;
     private AnimationTimer mouvment;
     private HealthBar vie;
+    private Thread explosion;
     public Demon(int x,int y){
         image = new ImageView();
         image.setX(x);
@@ -47,6 +50,22 @@ public class Demon{
         vie.getHealthBar().layoutYProperty().bind(Bindings.add(image.yProperty(),106));
         //mouvment.start();
         deadProperty.set(false);
+        explosion = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                mouvment.stop();
+                image.setImage(Data.getData().explosionIMG());
+                vie.hide();
+                try {
+                    Thread.sleep(600);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                image.setY(1000);
+                //((Pane)this.image.getParent()).getChildren().remove(this.vie.getHealthBar());
+                //((Pane)this.image.getParent()).getChildren().remove(this.image);
+            }
+        });
     }
 
 
@@ -64,9 +83,7 @@ public class Demon{
         vie.setValue(vie.getValue()-value);
         if (vie.getValue() <= 0){
             this.deadProperty.set(true);
-            mouvment.stop();
-            //image.setVisible(false);
-            image.setY(1100);
+            explosion.start();
         }
     }
 

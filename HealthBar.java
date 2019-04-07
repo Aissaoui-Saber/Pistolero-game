@@ -50,6 +50,9 @@ public class HealthBar{
     public Group getHealthBar(){
         return this.g;
     }
+    public void hide(){
+        this.g.setVisible(false);
+    }
     //---------------------------------------------------------------------------------------------
 
 

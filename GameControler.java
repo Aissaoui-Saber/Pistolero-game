@@ -1,5 +1,6 @@
 package sample;
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
@@ -8,13 +9,14 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 
-import javax.swing.text.html.ImageView;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -32,12 +34,19 @@ public class GameControler implements Initializable {
     private ImageView backImg;
 
     public Partie partie;
+
+    private Thread gameOver;
+    private Thread netoyage;
+    private ImageView gameOverIMG;
+    private ImageView bravoIMG;
+
+    private ChangeListener<Boolean> pause;
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
     }
     private void ballColusion(Ball b){
-        Thread t= new Thread(new Runnable() {
+        Thread ballIntersection= new Thread(new Runnable() {
             @Override
             public void run() {
                 for(int i=0;i<partie.getDemons().size();i++){
@@ -45,11 +54,13 @@ public class GameControler implements Initializable {
                     partie.getBalls().get(partie.getBalls().size()-1).getBallImageView().yProperty().addListener(new ChangeListener<Number>() {
                         @Override
                         public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-                            if (b.getBallImageView().getBoundsInParent().intersects(((Demon)(partie.getDemons().get(k))).getDemonImage().getBoundsInLocal())){
-                                if (!b.isBlocked()){
-                                    b.setBlocked(true);
-                                    ((Demon)(partie.getDemons().get(k))).blesser(b.getDegat());
-                                    b.stop();
+                            if (!((Demon)(partie.getDemons().get(k))).DeadProperty().get()) {
+                                if (b.getBallImageView().getBoundsInParent().intersects(((Demon) (partie.getDemons().get(k))).getDemonImage().getBoundsInLocal())) {
+                                    if (!b.isBlocked()) {
+                                        b.setBlocked(true);
+                                        ((Demon) (partie.getDemons().get(k))).blesser(b.getDegat());
+                                        b.stop();
+                                    }
                                 }
                             }
                         }
@@ -57,7 +68,7 @@ public class GameControler implements Initializable {
                 }
             }
         });
-        t.start();
+        ballIntersection.start();
     }
 
     public void startGame(){
@@ -66,15 +77,59 @@ public class GameControler implements Initializable {
 
     public void nouvellePartie(int nBall,int nDemons){
         partie = new Partie(nBall,nDemons);
+        pause = new ChangeListener<Boolean>() {
+            @Override
+            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                if (newValue) {
+                    partie.pause();
+                    Main.rootControler.goToMenuScene();
+                    System.out.println("Escape from game listener");
+                }
+            }
+        };
+        netoyage = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (netoyage != null){
+                    int i=0;
+                    while (i<gameScene.getChildren().size()){
+                        System.out.println(gameScene.getChildren().get(i).getTypeSelector());
+                        i++;
+                    }
+                    System.out.println("----------------");
+                }
+            }
+        });
+        gameOverIMG = new ImageView(Data.getData().gameOverIMG());
+        gameOverIMG.setFitWidth(400);
+        gameOverIMG.setFitHeight(225);
+        gameOverIMG.setY(247);
+        gameOverIMG.setX(440);
 
+        bravoIMG = new ImageView(Data.getData().bravoIMG());
+        bravoIMG.setX(452);
+        bravoIMG.setY(172);
+
+        gameOver = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(800);
+
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        });
         //NOMBRE DE BALLS LABEL---------------------------------------------------------
-        if (partie.getPistolet().nbrBallsProperty.get() != -1){
-            nbrBallLabel.setText(partie.getPistolet().nbrBallsProperty.get()+" ");
+        if (partie.nbrBallsProperty.get() != -1){
+            nbrBallLabel.setText(partie.nbrBallsProperty.get()+" ");
         }else {
             nbrBallLabel.setText("∞ ");
         }
 
-        partie.getPistolet().nbrBallsProperty.addListener(new ChangeListener<Number>() {
+        partie.nbrBallsProperty.addListener(new ChangeListener<Number>() {
             @Override
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
                 nbrBallLabel.setText(newValue+" ");
@@ -94,8 +149,8 @@ public class GameControler implements Initializable {
             @Override
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
                 nbrDemonsLabel.setText("  "+newValue+"/"+nbrDemons+" ");
-                if ((int)newValue == nbrDemons){//FIN DE LA PARTIE
-                    System.out.println("YOU WIN");
+                if ((int)newValue == nbrDemons){//FIN DE LA PARTIE (TOUT DEMONS MORTS)
+                    gameScene.getChildren().add(bravoIMG);
                 }
             }
         });
@@ -115,13 +170,36 @@ public class GameControler implements Initializable {
             @Override
             public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
                 if (newValue){
-                    if (partie.getPistolet().nbrBallsProperty.get() > 0){
+                    if (partie.getPistolet().vivant.get()) {
+                        System.out.println(gameScene.getChildren().size());
+                        if (partie.nbrBallsProperty.get() > 0) {//NOMBRE DE BALLS FINI
+                            partie.getBalls().add(new Ball(partie.getPistolet().ballOutXProperty.get(), partie.getPistolet().ballOutYProperty.get(), 25));
+                            ballColusion(partie.getBalls().get(partie.getBalls().size() - 1));
+                            gameScene.getChildren().add(partie.getBalls().get(partie.getBalls().size() - 1).getBallImageView());
+                            partie.getBalls().get(partie.getBalls().size() - 1).start();
+                            partie.nbrBallsProperty.set(partie.nbrBallsProperty.get() - 1);
+                        } else if (partie.nbrBallsProperty.get() == -1) {//NOMBRE DE BALLS INFINI
+                            partie.getBalls().add(new Ball(partie.getPistolet().ballOutXProperty.get(), partie.getPistolet().ballOutYProperty.get(), 25));
+                            ballColusion(partie.getBalls().get(partie.getBalls().size() - 1));
+                            gameScene.getChildren().add(partie.getBalls().get(partie.getBalls().size() - 1).getBallImageView());
+                            partie.getBalls().get(partie.getBalls().size() - 1).start();
+                        }
+                    }
+                }
+            }
+        });
+        //TIR AVEC LA SOURIS
+        gameScene.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                if (partie.getPistolet().vivant.get()){
+                    if (partie.nbrBallsProperty.get() > 0){//NOMBRE DE BALLS FINI
                         partie.getBalls().add(new Ball(partie.getPistolet().ballOutXProperty.get(),partie.getPistolet().ballOutYProperty.get(),25));
                         ballColusion(partie.getBalls().get(partie.getBalls().size()-1));
                         gameScene.getChildren().add(partie.getBalls().get(partie.getBalls().size()-1).getBallImageView());
                         partie.getBalls().get(partie.getBalls().size()-1).start();
-                        partie.getPistolet().nbrBallsProperty.set(partie.getPistolet().nbrBallsProperty.get()-1);
-                    }else if (partie.getPistolet().nbrBallsProperty.get() == -1){
+                        partie.nbrBallsProperty.set(partie.nbrBallsProperty.get()-1);
+                    }else if (partie.nbrBallsProperty.get() == -1){//NOMBRE DE BALLS INFINI
                         partie.getBalls().add(new Ball(partie.getPistolet().ballOutXProperty.get(),partie.getPistolet().ballOutYProperty.get(),25));
                         ballColusion(partie.getBalls().get(partie.getBalls().size()-1));
                         gameScene.getChildren().add(partie.getBalls().get(partie.getBalls().size()-1).getBallImageView());
@@ -130,36 +208,19 @@ public class GameControler implements Initializable {
                 }
             }
         });
-        //TIR AVEC LA SOURIS
-        /*
-        gameScene.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                if (partie.getPistolet().nbrBallsProperty.get() > 0){
-                    partie.getBalls().add(new Ball(partie.getPistolet().ballOutXProperty.get(),partie.getPistolet().ballOutYProperty.get(),25));
-                    ballColusion(partie.getBalls().get(partie.getBalls().size()-1));
-                    gameScene.getChildren().add(partie.getBalls().get(partie.getBalls().size()-1).getBallImageView());
-                    partie.getBalls().get(partie.getBalls().size()-1).start();
-                    partie.getPistolet().nbrBallsProperty.set(partie.getPistolet().nbrBallsProperty.get()-1);
-                }else if (partie.getPistolet().nbrBallsProperty.get() == -1){
-                    partie.getBalls().add(new Ball(partie.getPistolet().ballOutXProperty.get(),partie.getPistolet().ballOutYProperty.get(),25));
-                    ballColusion(partie.getBalls().get(partie.getBalls().size()-1));
-                    gameScene.getChildren().add(partie.getBalls().get(partie.getBalls().size()-1).getBallImageView());
-                    partie.getBalls().get(partie.getBalls().size()-1).start();
-                }
-            }
-        });*/
         //-------------------------------------------------------------------------------------------------------------
-        GameConfig.getInstance().getPauseKey().getPressedProprety().addListener(new ChangeListener<Boolean>() {
+        GameConfig.getInstance().getPauseKey().getPressedProprety().addListener(pause);
+        //FIN DE LA PARTIE--------------------------------------------------------------------------------------
+        partie.getPistolet().vivant.addListener(new ChangeListener<Boolean>() {
             @Override
             public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-                if (newValue) {
-                    partie.pause();
-                    Main.rootControler.goToMenuScene();
-                }
-
+                partie.pause();
+                gameOver.start();
+                gameScene.getChildren().add(gameOverIMG);
             }
         });
+        //------------------------------------------------------------------------------------------------------
+        netoyage.start();
     }
 
     public void chargerPartie(String filePath){
@@ -171,10 +232,6 @@ public class GameControler implements Initializable {
     }
 
     public void clearScene(){
-        for (int i=1;i<this.gameScene.getChildren().size();i++){
-            if (!this.gameScene.getChildren().get(i).equals(hbox)){
-                this.gameScene.getChildren().remove(i);
-            }
-        }
+        GameConfig.getInstance().getPauseKey().getPressedProprety().removeListener(pause);
     }
 }

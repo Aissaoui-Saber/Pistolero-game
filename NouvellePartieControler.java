@@ -94,7 +94,7 @@ public class NouvellePartieControler implements Initializable {
         if (event.getCode() == KeyCode.ENTER){
             if (index == 2){
                 if (Main.rootControler.gameControler.partie != null){
-                    Main.rootControler.gameControler.clearScene();
+                    Main.rootControler.reloadGameScene();
                     Main.rootControler.gameControler.partie = null;
                 }
                 if (indexNbrDemon == 1010){

@@ -69,7 +69,9 @@ public class MenuControler implements Initializable {
             }
         }
         if (event.getCode() == KeyCode.ESCAPE){
-            Main.rootControler.goToGameScene();
+            if (Main.rootControler.gameControler.partie != null)
+                Main.rootControler.goToGameScene();
+            System.out.println("Escape from menu listener");
         }
     }
 

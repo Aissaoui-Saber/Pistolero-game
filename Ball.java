@@ -55,8 +55,6 @@ public class Ball {
     public void stop(){
         this.mouvment.stop();
         ball.setY(1000);
-        //if (this != null)
-            //((Pane)(ball.getParent())).getChildren().remove(this.getBallImageView());
     }
     public void hide(){
         this.getBallImageView().setVisible(false);

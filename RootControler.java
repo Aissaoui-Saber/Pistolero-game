@@ -23,6 +23,7 @@ public class RootControler implements Initializable {
     public MenuControler menuControler;
     public NouvellePartieControler nouvellePartieControler;
 
+
     private FXMLLoader menuLoader,gameLoader,nouvellePartieLoader;
 
 
@@ -60,7 +61,6 @@ public class RootControler implements Initializable {
         }
         nouvellePartieControler = nouvellePartieLoader.getController();
         //---------------------------------------------------------------
-
         goToMenuScene();
     }
     public void goToGameScene(){
@@ -74,5 +74,17 @@ public class RootControler implements Initializable {
     public void goToNouvellePartieScene(){
         rootScene.getChildren().clear();
         rootScene.getChildren().add(nouvellePartieScene);
+    }
+    public void reloadGameScene(){
+        rootScene.getChildren().remove(gameScene);
+        gameControler.clearScene();
+        gameLoader = new FXMLLoader();
+        gameLoader.setLocation(getClass().getResource("Game.fxml"));
+        try {
+            gameScene = gameLoader.load();
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+        gameControler = gameLoader.getController();
     }
 }

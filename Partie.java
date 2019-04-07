@@ -6,6 +6,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXMLLoader;
 
+import javax.swing.text.html.ImageView;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -14,6 +15,7 @@ public class Partie {
     private Pistol pistolet;
     private int nbrBall;
     private int nbrDemons;
+    public IntegerProperty nbrBallsProperty;
     public IntegerProperty nbrDemonsMorts;
     private ArrayList<Demon> demons;
     public ArrayList<Ball> balls;
@@ -32,6 +34,7 @@ public class Partie {
         balls = new ArrayList<Ball>();
         nbrBall = nBall;
         nbrDemonsMorts = new SimpleIntegerProperty(0);
+        nbrBallsProperty = new SimpleIntegerProperty(nBall);
         demons = new ArrayList<Demon>();
         initializeDemonsList();
         //COLLISION DEMONS--------------------------------------------------------------------------------------
@@ -40,8 +43,9 @@ public class Partie {
             ((Demon) demons.get(i)).getDemonImage().yProperty().addListener(new ChangeListener<Number>() {
                 @Override
                 public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-                    if (((Demon) demons.get(k)).intersects(pistolet.getPistolImage())){
-                        pistolet.blesser(100);
+                    if (((Demon) demons.get(k)).intersects(pistolet.getPistol())){
+                        if (pistolet.vivant.get())
+                            pistolet.tuer();
                     }
                 }
             });
@@ -53,7 +57,30 @@ public class Partie {
                     }
                 }
             });
+            pistolet.getPistol().xProperty().addListener(new ChangeListener<Number>() {
+                @Override
+                public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+                    if (pistolet.getPistol().intersects(demons.get(k).getDemonImage().getBoundsInParent())){
+                        if (pistolet.vivant.get()){
+                            pistolet.tuer();
+                        }
+                    }
+                }
+            });
+            pistolet.getPistol().yProperty().addListener(new ChangeListener<Number>() {
+                @Override
+                public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+                    if (pistolet.getPistol().intersects(demons.get(k).getDemonImage().getBoundsInParent())){
+                        if (pistolet.vivant.get()){
+                            pistolet.tuer();
+                        }
+                    }
+                }
+            });
         }
+        //------------------------------------------------------------------------------------------------------
+        //COLLISION PISTOL--------------------------------------------------------------------------------------
+
         //------------------------------------------------------------------------------------------------------
     }
     public Partie(String loadFilePath){
@@ -95,11 +122,9 @@ public class Partie {
             demons.get(i).stop();
         }
         enCours = false;
-        System.out.println("Paused");
     }
     public void reprendre(){
         enCours = true;
-        System.out.println("Resumed");
     }
     private void initializeDemonsList(){
         for (int i=0;i<nbrDemons;i++){
