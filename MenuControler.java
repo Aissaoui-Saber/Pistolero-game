@@ -1,18 +1,11 @@
 package sample;
 
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
-import javafx.scene.control.Label;
-import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
 
-import javax.swing.text.html.ImageView;
-import java.awt.event.ActionEvent;
-import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -50,8 +43,8 @@ public class MenuControler implements Initializable {
             switch (menuIndex){
                 case 0:
                     Main.rootControler.goToNouvellePartieScene();
-                    //Main.rootControler.gameControler.nouvellePartie(80,20);
-                    //Main.rootControler.gameControler.startGame();
+                    //Main.rootControler.partieControler.nouvellePartie(80,20);
+                    //Main.rootControler.partieControler.startGame();
                     break;
                 case 2:
                     //LOAD GAME
@@ -69,9 +62,11 @@ public class MenuControler implements Initializable {
             }
         }
         if (event.getCode() == KeyCode.ESCAPE){
-            if (Main.rootControler.gameControler.partie != null)
+            /*
+            if (Main.rootControler.partieControler.partie != null)
                 Main.rootControler.goToGameScene();
             System.out.println("Escape from menu listener");
+            */
         }
     }
 

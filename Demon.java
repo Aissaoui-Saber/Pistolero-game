@@ -8,6 +8,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.Group;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -27,7 +28,7 @@ public class Demon{
     private AnimationTimer mouvment;
     private HealthBar vie;
     private Thread explosion;
-    public Demon(int x,int y){
+    public Demon(int x, int y){
         image = new ImageView();
         image.setX(x);
         image.setY(y);

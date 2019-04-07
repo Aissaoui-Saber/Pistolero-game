@@ -50,7 +50,7 @@ public class Pistol {
 
     public BooleanProperty vivant;
 
-    public Pistol(int nBalls){
+    public Pistol(){
         //INITIALISATION DE PISTOLET
         pistol = new ImageView();
         pistol.setFocusTraversable(true);

@@ -93,25 +93,26 @@ public class NouvellePartieControler implements Initializable {
         }
         if (event.getCode() == KeyCode.ENTER){
             if (index == 2){
-                if (Main.rootControler.gameControler.partie != null){
+                /*
+                if (Main.rootControler.partieControler.partie != null){
                     Main.rootControler.reloadGameScene();
-                    Main.rootControler.gameControler.partie = null;
-                }
+                    Main.rootControler.partieControler.partie = null;
+                }*/
                 if (indexNbrDemon == 1010){
                     if (indexNbrBall == 205){
-                        Main.rootControler.gameControler.nouvellePartie(-1,-1);
+                        Main.rootControler.partieControler.nouvellePartie(-1,-1);
                     }else {
-                        Main.rootControler.gameControler.nouvellePartie(indexNbrBall*5,-1);
+                        Main.rootControler.partieControler.nouvellePartie(indexNbrBall*5,-1);
                     }
                 }else{
                     if (indexNbrBall == 205){
-                        Main.rootControler.gameControler.nouvellePartie(-1,indexNbrDemon);
+                        Main.rootControler.partieControler.nouvellePartie(-1,indexNbrDemon);
                     }else {
-                        Main.rootControler.gameControler.nouvellePartie(indexNbrBall*5,indexNbrDemon);
+                        Main.rootControler.partieControler.nouvellePartie(indexNbrBall*5,indexNbrDemon);
                     }
                 }
                 Main.rootControler.goToGameScene();
-                Main.rootControler.gameControler.startGame();
+                Main.rootControler.partieControler.startGame();
             }
             if (index == 3){
                 Main.rootControler.goToMenuScene();

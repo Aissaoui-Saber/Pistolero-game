@@ -1,12 +1,9 @@
 package sample;
 
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 
 import java.io.IOException;
@@ -19,7 +16,7 @@ public class RootControler implements Initializable {
 
     private Parent gameScene,menuScene,nouvellePartieScene;
 
-    public GameControler gameControler;
+    public PartieControler partieControler;
     public MenuControler menuControler;
     public NouvellePartieControler nouvellePartieControler;
 
@@ -48,7 +45,7 @@ public class RootControler implements Initializable {
         }catch (IOException e){
             e.printStackTrace();
         }
-        gameControler = gameLoader.getController();
+        partieControler = gameLoader.getController();
         //---------------------------------------------------------------
 
         //NOUVELLE PARTIE------------------------------------------------
@@ -77,7 +74,7 @@ public class RootControler implements Initializable {
     }
     public void reloadGameScene(){
         rootScene.getChildren().remove(gameScene);
-        gameControler.clearScene();
+        partieControler.clearScene();
         gameLoader = new FXMLLoader();
         gameLoader.setLocation(getClass().getResource("Game.fxml"));
         try {
@@ -85,6 +82,6 @@ public class RootControler implements Initializable {
         }catch (IOException e){
             e.printStackTrace();
         }
-        gameControler = gameLoader.getController();
+        partieControler = gameLoader.getController();
     }
 }
