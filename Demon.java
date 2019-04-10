@@ -4,41 +4,34 @@ import javafx.animation.AnimationTimer;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.scene.Group;
 import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.control.ProgressBar;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
-import sun.awt.windows.ThemeReader;
-
-import javax.naming.Binding;
 
 
-public class Demon{
+public class Demon extends ImageView{
     private boolean sexe;
-    private double degat;
-    private ImageView image;
     private BooleanProperty deadProperty;
     private int demonSpeed;
     private AnimationTimer mouvment;
     private HealthBar vie;
     private Thread explosion;
-    public Demon(int x, int y){
-        image = new ImageView();
-        image.setX(x);
-        image.setY(y);
-        vie = new HealthBar(150);
-        image.setImage(Data.getData().demon1IMG());
-        image.setFitWidth(150);
-        image.setFitHeight(106);
+    public Demon(int x, int y,boolean masculin){
+        this.setX(x);
+        this.setY(y);
+        ImageView image = this;
+        sexe = masculin;
+        if (masculin){
+            this.setImage(Data.getData().demonMale1IMG());
+            this.setFitWidth(Data.getData().demonMale1Width());
+            this.setFitHeight(Data.getData().demonMale1Height());
+            vie = new HealthBar(Data.getData().demonMale1Width());
+        }else {
+            this.setImage(Data.getData().demonFemale1IMG());
+            this.setFitWidth(Data.getData().demonFemale1Width());
+            this.setFitHeight(Data.getData().demonFemale1Height());
+            vie = new HealthBar(Data.getData().demonFemale1Width());
+        }
 
-        sexe = true;
-        degat = 20;
         deadProperty = new SimpleBooleanProperty(true);
         demonSpeed=1;
         mouvment = new AnimationTimer() {
@@ -47,8 +40,8 @@ public class Demon{
                 moveDown();
             }
         };
-        vie.getHealthBar().layoutXProperty().bind(image.xProperty());
-        vie.getHealthBar().layoutYProperty().bind(Bindings.add(image.yProperty(),106));
+        vie.getHealthBar().layoutXProperty().bind(this.xProperty());
+        vie.getHealthBar().layoutYProperty().bind(Bindings.add(this.yProperty(),106));
         //mouvment.start();
         deadProperty.set(false);
         explosion = new Thread(new Runnable() {
@@ -56,22 +49,14 @@ public class Demon{
             public void run() {
                 mouvment.stop();
                 image.setImage(Data.getData().explosionIMG());
-                vie.hide();
                 try {
                     Thread.sleep(600);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                image.setY(1000);
-                //((Pane)this.image.getParent()).getChildren().remove(this.vie.getHealthBar());
-                //((Pane)this.image.getParent()).getChildren().remove(this.image);
+                image.setY(-300);
             }
         });
-    }
-
-
-    public ImageView getDemonImage() {
-        return image;
     }
 
     public void deplacer(int direction){
@@ -89,11 +74,11 @@ public class Demon{
     }
 
     private void moveDown(){
-        if (image.getY() < 720){
-            if (image.getY() <0){
-                image.setY(image.getY() + 20);
+        if (this.getY() < 780){
+            if (this.getY() <0){
+                this.setY(this.getY() + 20);
             }else {
-                image.setY(image.getY() + demonSpeed);
+                this.setY(this.getY() + demonSpeed);
             }
 
         }else{
@@ -106,7 +91,7 @@ public class Demon{
     }
 
     public boolean intersects(Node n){
-        return this.image.getBoundsInParent().intersects(n.getBoundsInParent());
+        return this.getBoundsInParent().intersects(n.getBoundsInParent());
     }
     public void stop(){
         this.mouvment.stop();

@@ -15,20 +15,21 @@ import javafx.scene.shape.Shape;
 import java.awt.*;
 
 
-public class Ball {
-    private ImageView ball;
+public class Ball extends ImageView{
+    //private ImageView ball;
     private int ballSpeed = 20;
     private AnimationTimer mouvment;
     private double degat;
-    private boolean blocked;
+    public BooleanProperty blocked;
 
     public Ball(int x,int y,double Degat){
-        ball = new ImageView(Data.getData().bulletIMG());
-        ball.setX(x);
-        ball.setY(y);
-        ball.setFitWidth(10);
-        ball.setFitHeight(20);
-        blocked = false;
+        //ball = new ImageView(Data.getData().bulletIMG());
+        this.setImage(Data.getData().bulletIMG());
+        this.setX(x);
+        this.setY(y);
+        this.setFitWidth(10);
+        this.setFitHeight(20);
+        blocked = new SimpleBooleanProperty(false);
         mouvment = new AnimationTimer() {
             @Override
             public void handle(long now) {
@@ -38,15 +39,15 @@ public class Ball {
         degat = Degat;
     }
 
-    public ImageView getBallImageView() {
+    /*public ImageView getBallImageView() {
         return ball;
-    }
+    }*/
 
     private void moveToTop(){
-        if (ball.getY() > -30){
-            ball.setY(ball.getY() - ballSpeed);
+        if (this.getY() > -20){
+            this.setY(this.getY() - ballSpeed);
         }else{
-            mouvment.stop();
+            stop();
         }
     }
     public void start(){
@@ -54,10 +55,12 @@ public class Ball {
     }
     public void stop(){
         this.mouvment.stop();
-        ball.setY(1000);
+        Main.rootControler.partieControler.gameScene.getChildren().remove(this);
+        this.blocked.set(true);
+        //this.setY(1000);
     }
     public void hide(){
-        this.getBallImageView().setVisible(false);
+        //this.getBallImageView().setVisible(false);
     }
 
     public double getDegat() {
@@ -66,13 +69,5 @@ public class Ball {
 
     public void setDegat(double degat) {
         this.degat = degat;
-    }
-
-    public boolean isBlocked() {
-        return blocked;
-    }
-
-    public void setBlocked(boolean blocked) {
-        this.blocked = blocked;
     }
 }

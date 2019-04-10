@@ -77,18 +77,12 @@ public class NouvellePartieControler implements Initializable {
                     nbrBall.setText("Nombre de Balls < "+indexNbrBall*5+" >");
                 }
             }
-            if  (index == 1){
-                if (indexNbrDemon == 1000){
-                    indexNbrDemon +=10;
-                    nbrDemon.setText("Nombre de Démons < INFINI >");
-                }
-                if (indexNbrDemon < 1000){
-                    if (indexNbrDemon >= 100)
-                        indexNbrDemon+=10;
-                    else
-                        indexNbrDemon++;
-                    nbrDemon.setText("Nombre de Démons < "+indexNbrDemon+" >");
-                }
+            if  (index == 1) {
+                if (indexNbrDemon >= 100)
+                    indexNbrDemon += 10;
+                else
+                    indexNbrDemon++;
+                nbrDemon.setText("Nombre de Démons < " + indexNbrDemon + " >");
             }
         }
         if (event.getCode() == KeyCode.ENTER){
@@ -98,18 +92,10 @@ public class NouvellePartieControler implements Initializable {
                     Main.rootControler.reloadGameScene();
                     Main.rootControler.partieControler.partie = null;
                 }*/
-                if (indexNbrDemon == 1010){
-                    if (indexNbrBall == 205){
-                        Main.rootControler.partieControler.nouvellePartie(-1,-1);
-                    }else {
-                        Main.rootControler.partieControler.nouvellePartie(indexNbrBall*5,-1);
-                    }
-                }else{
-                    if (indexNbrBall == 205){
-                        Main.rootControler.partieControler.nouvellePartie(-1,indexNbrDemon);
-                    }else {
-                        Main.rootControler.partieControler.nouvellePartie(indexNbrBall*5,indexNbrDemon);
-                    }
+                if (indexNbrBall == 205){
+                    Main.rootControler.partieControler.nouvellePartie(-1,indexNbrDemon);
+                }else {
+                    Main.rootControler.partieControler.nouvellePartie(indexNbrBall*5,indexNbrDemon);
                 }
                 Main.rootControler.goToGameScene();
                 Main.rootControler.partieControler.startGame();
