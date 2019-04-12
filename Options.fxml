@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.geometry.Insets?>
+<StackPane fx:controller="sample.OptionsControler"
+           xmlns:fx="http://javafx.com/fxml" alignment="center" stylesheets="@Style.css" fx:id="optionsPane">
+    <ImageView>
+        <Image url="@Images/menuBackground.jpg"/>
+    </ImageView>
+    <VBox alignment="CENTER" focusTraversable="true">
+        <children>
+            <Label styleClass="menuLabel">Touches</Label>
+            <GridPane alignment="center" hgap="2" vgap="5" styleClass="keyBinding">
+                <Label GridPane.columnIndex="0" GridPane.rowIndex="0">Haut</Label>
+                <Label GridPane.columnIndex="0" GridPane.rowIndex="1">Bas</Label>
+                <Label GridPane.columnIndex="0" GridPane.rowIndex="2">Gauche</Label>
+                <Label GridPane.columnIndex="0" GridPane.rowIndex="3">Droite</Label>
+                <Label GridPane.columnIndex="0" GridPane.rowIndex="4">Tir</Label>
+
+                <Button onAction="#defineUpBtn" GridPane.columnIndex="1" GridPane.rowIndex="0" fx:id="upBtn">Up</Button>
+                <Button onAction="#defineDownBtn" GridPane.columnIndex="1" GridPane.rowIndex="1" fx:id="downBtn">Down</Button>
+                <Button onAction="#defineLeftBtn" GridPane.columnIndex="1" GridPane.rowIndex="2" fx:id="leftBtn">Left</Button>
+                <Button onAction="#defineRightBtn" GridPane.columnIndex="1" GridPane.rowIndex="3" fx:id="rightBtn">Right</Button>
+                <Button onAction="#defineFireBtn" GridPane.columnIndex="1" GridPane.rowIndex="4" fx:id="fireBtn">Space</Button>
+            </GridPane>
+            <Label styleClass="menuLabel">Vitesse</Label>
+            <GridPane alignment="center" hgap="2" vgap="2" styleClass="keyBinding">
+                <Label GridPane.columnIndex="0" GridPane.rowIndex="0">Pistolet</Label>
+                <Label GridPane.columnIndex="0" GridPane.rowIndex="1">Démons</Label>
+
+                <Slider GridPane.columnIndex="1" GridPane.rowIndex="0" fx:id="pistolSpeedSlider"></Slider>
+                <Slider GridPane.columnIndex="1" GridPane.rowIndex="1" fx:id="demonSpeedSlider"></Slider>
+            </GridPane>
+            <Button onMouseClicked="#goToMenu"><padding><Insets top="20" right="20" bottom="20" left="20"/></padding>Retour</Button>
+        </children>
+    </VBox>
+
+</StackPane>

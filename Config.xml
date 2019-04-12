@@ -4,7 +4,11 @@
         <down>Down</down>
         <left>Left</left>
         <right>Right</right>
-        <fire>Space</fire>
+        <fire>Numpad 0</fire>
         <pause>Esc</pause>
     </keys>
+    <speed>
+        <demons>2.0</demons>
+        <pistol>13.0</pistol>
+    </speed>
 </config>

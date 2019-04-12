@@ -53,7 +53,7 @@ public class MenuControler implements Initializable {
                     //SAVE GAME
                     break;
                 case 3:
-                    //OPTION MENU
+                    Main.rootControler.goToOptionsScene();
                     break;
                 case 4:
                     //EXIT GAME

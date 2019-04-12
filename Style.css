@@ -9,3 +9,15 @@
     -fx-font-size:26px;
     -fx-text-fill:white;
 }
+.keyBinding{
+    -fx-background-color:rgba(200,200,200,0.5);
+}
+.keyBinding Label{
+    -fx-font-size:18px;
+    -fx-padding:10px;
+}
+.keyBinding Button{
+    -fx-font-size:18px;
+    -fx-padding:10px;
+    -fx-width:100px;
+}

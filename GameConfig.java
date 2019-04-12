@@ -1,7 +1,9 @@
 package sample;
 
 import com.sun.glass.events.KeyEvent;
+import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.scene.Node;
 import javafx.scene.input.KeyCode;
@@ -29,6 +31,8 @@ public class GameConfig {
     private Key fireKey;
     private Key pauseKey;
     private static final String configFilePath = "src/sample/Config.xml";
+    private double pistolSpeed;
+    private double demonsSpeed;
 
     private GameConfig(){
         try {
@@ -80,6 +84,11 @@ public class GameConfig {
                     break;
                 }
             }
+            nodeValue = doc.getElementsByTagName("pistol").item(0).getTextContent();
+            pistolSpeed = Double.valueOf(nodeValue);
+
+            nodeValue = doc.getElementsByTagName("demons").item(0).getTextContent();
+            demonsSpeed = Double.valueOf(nodeValue);
         } catch (Exception e) {
             upKey = new Key(KeyCode.UP);
             downKey = new Key(KeyCode.DOWN);
@@ -87,6 +96,8 @@ public class GameConfig {
             rightKey = new Key(KeyCode.RIGHT);
             fireKey = new Key(KeyCode.SPACE);
             pauseKey = new Key(KeyCode.ESCAPE);
+            pistolSpeed = 4;
+            demonsSpeed = 5;
         }
     }
     public void saveChanges(){
@@ -101,6 +112,8 @@ public class GameConfig {
             doc.getElementsByTagName("right").item(0).setTextContent(rightKey.getCode().getName());
             doc.getElementsByTagName("fire").item(0).setTextContent(fireKey.getCode().getName());
             doc.getElementsByTagName("pause").item(0).setTextContent(pauseKey.getCode().getName());
+            doc.getElementsByTagName("pistol").item(0).setTextContent(String.valueOf(pistolSpeed));
+            doc.getElementsByTagName("demons").item(0).setTextContent(String.valueOf(demonsSpeed));
 
             // write the content into xml file
             TransformerFactory transformerFactory = TransformerFactory.newInstance();
@@ -108,8 +121,6 @@ public class GameConfig {
             DOMSource source = new DOMSource(doc);
             StreamResult result = new StreamResult(new File(configFilePath));
             transformer.transform(source, result);
-
-            System.out.println("Saved");
 
         } catch (ParserConfigurationException pce) {
 
@@ -157,6 +168,13 @@ public class GameConfig {
         return pauseKey;
     }
 
+    public double getDemonsSpeed() {
+        return demonsSpeed;
+    }
+
+    public double getPistolSpeed() {
+        return pistolSpeed;
+    }
 
     public void setPauseKey(KeyCode pauseKey) {
         this.pauseKey.setCode(pauseKey);
@@ -180,5 +198,13 @@ public class GameConfig {
 
     public void setFireKey(KeyCode fireKey) {
         this.fireKey.setCode(fireKey);
+    }
+
+    public void setDemonsSpeed(double demonsSpeed) {
+        this.demonsSpeed = demonsSpeed;
+    }
+
+    public void setPistolSpeed(double pistolSpeed) {
+        this.pistolSpeed = pistolSpeed;
     }
 }

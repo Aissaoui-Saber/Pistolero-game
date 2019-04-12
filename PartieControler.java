@@ -12,6 +12,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
+import javafx.scene.effect.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
@@ -155,8 +156,10 @@ public class PartieControler implements Initializable {
                             gameScene.getChildren().add(balls.get(balls.size() - 1));
                             balls.get(balls.size() - 1).start();
                         }
-                        if (balls.get(0).blocked.get()){
-                            balls.remove(0);
+                        if (balls.size()>0){
+                            if (balls.get(0).blocked.get()){
+                                balls.remove(0);
+                            }
                         }
                     }
                 }
@@ -192,10 +195,10 @@ public class PartieControler implements Initializable {
         //INITIALISATION DE LA LISTE DES DEMONS------------------------------------------------------------------
         for (int i=0;i<nDemons;i++){
             int k = i;
-            if (random(0,1) == 1){
-                demons.add(new Demon(random(0,1130),-200,true));
+            if (randomInt(0,1) == 1){
+                demons.add(new Demon(randomInt(0,1130),-200,true));
             }else {
-                demons.add(new Demon(random(0,1130),-200,false));
+                demons.add(new Demon(randomInt(0,1130),-200,false));
             }
             gameScene.getChildren().add(demons.get(i));
             gameScene.getChildren().add(demons.get(i).getVie().getHealthBar());
@@ -205,9 +208,11 @@ public class PartieControler implements Initializable {
                 @Override
                 public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
                     if (demons.get(k).intersects(pistolet.getPistol())) {
-                        if (pistolet.vivant.get())
+                        if (pistolet.vivant.get()){
+                            demons.get(k).stop();
                             pistolet.tuer();
-                        demons.get(k).stop();
+                        }
+
                     }
                 }
             });
@@ -215,18 +220,20 @@ public class PartieControler implements Initializable {
                 @Override
                 public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
                     if (demons.get(k).intersects(pistolet.getPistol())) {
-                        if (pistolet.vivant.get())
+                        if (pistolet.vivant.get()){
+                            demons.get(k).stop();
                             pistolet.tuer();
-                        demons.get(k).stop();
+                        }
                     }
                 }
             });
             //LORSQUE UN DEMON EST TUEE, INCREMENTER LE NBR DE DEMONS MORTS
-            demons.get(k).DeadProperty().addListener(new ChangeListener<Boolean>() {
+            demons.get(k).isDeadProperty.addListener(new ChangeListener<Boolean>() {
                 @Override
                 public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
                     if (newValue) {
                         nbrDemonsMorts.set(nbrDemonsMorts.get() + 1);
+                        demons.get(k).yProperty().set(-500);
                         gameScene.getChildren().remove(demons.get(k));
                         gameScene.getChildren().remove(demons.get(k).getVie().getHealthBar());
                     }
@@ -238,8 +245,10 @@ public class PartieControler implements Initializable {
                 public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
                     if (pistolet.getPistol().intersects(demons.get(k).getBoundsInParent())) {
                         if (pistolet.vivant.get()) {
-                            pistolet.tuer();
-                            demons.get(k).stop();
+                            if (!demons.get(k).isExplosing.get()){
+                                pistolet.tuer();
+                                demons.get(k).stop();
+                            }
                         }
                     }
                 }
@@ -250,8 +259,10 @@ public class PartieControler implements Initializable {
                 public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
                     if (pistolet.getPistol().intersects(demons.get(k).getBoundsInParent())) {
                         if (pistolet.vivant.get()) {
-                            pistolet.tuer();
-                            demons.get(k).stop();
+                            if (!demons.get(k).isExplosing.get()){
+                                pistolet.tuer();
+                                demons.get(k).stop();
+                            }
                         }
                     }
                 }
@@ -263,20 +274,15 @@ public class PartieControler implements Initializable {
 
     //INTERSECTION D'UNE BALLS AVEC LES DEMONS-------------------------------------------------------------------
     private void ballColusion(Ball b){
-        Thread ballIntersection= new Thread(new Runnable() {
-            @Override
-            public void run() {
-
-            }
-        });
         for(int i=0;i<demons.size();i++){
             int k = i;
             balls.get(balls.size()-1).yProperty().addListener(new ChangeListener<Number>() {
                 @Override
                 public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-                    if (!((Demon)(demons.get(k))).DeadProperty().get()) {
+                    if (!((Demon)(demons.get(k))).isDeadProperty.get() && !((Demon)(demons.get(k))).isExplosing.get()) {
                         if (b.getBoundsInParent().intersects(((Demon) (demons.get(k))).getBoundsInLocal())) {
                             if (!b.blocked.get()) {
+                                demons.get(k).effectProperty().set(new SepiaTone());
                                 b.blocked.set(true);
                                 ((Demon) (demons.get(k))).blesser(b.getDegat());
                                 b.stop();
@@ -286,7 +292,6 @@ public class PartieControler implements Initializable {
                 }
             });
         }
-        //ballIntersection.start();
     }
     //-----------------------------------------------------------------------------------------------------------
 
@@ -321,7 +326,10 @@ public class PartieControler implements Initializable {
     public void clearScene(){
         GameConfig.getInstance().getPauseKey().getPressedProprety().removeListener(pause);
     }
-    private int random(int minIncl,int maxIncl){
+    private int randomInt(int minIncl,int maxIncl){
         return minIncl + (int)(Math.random() * ((maxIncl - minIncl) + 1));
+    }
+    private double randomDouble(double minIncl,double maxIncl){
+        return minIncl + (Math.random() * ((maxIncl - minIncl) + 1));
     }
 }

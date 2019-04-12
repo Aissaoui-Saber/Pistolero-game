@@ -14,14 +14,15 @@ public class RootControler implements Initializable {
     @FXML
     private StackPane rootScene;//LA RACINE
 
-    private Parent gameScene,menuScene,nouvellePartieScene;
+    private Parent gameScene,menuScene,nouvellePartieScene,optionsScene;
 
     public PartieControler partieControler;
     public MenuControler menuControler;
     public NouvellePartieControler nouvellePartieControler;
+    public OptionsControler optionsControler;
 
 
-    private FXMLLoader menuLoader,gameLoader,nouvellePartieLoader;
+    private FXMLLoader menuLoader,gameLoader,nouvellePartieLoader,optionsLoader;
 
 
     @Override
@@ -58,6 +59,17 @@ public class RootControler implements Initializable {
         }
         nouvellePartieControler = nouvellePartieLoader.getController();
         //---------------------------------------------------------------
+
+        //OPTIONS------------------------------------------------
+        optionsLoader = new FXMLLoader();
+        optionsLoader.setLocation(getClass().getResource("Options.fxml"));
+        try {
+            optionsScene = optionsLoader.load();
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+        optionsControler = optionsLoader.getController();
+        //---------------------------------------------------------------
         goToMenuScene();
     }
     public void goToGameScene(){
@@ -71,6 +83,10 @@ public class RootControler implements Initializable {
     public void goToNouvellePartieScene(){
         rootScene.getChildren().clear();
         rootScene.getChildren().add(nouvellePartieScene);
+    }
+    public void goToOptionsScene(){
+        rootScene.getChildren().clear();
+        rootScene.getChildren().add(optionsScene);
     }
     public void reloadGameScene(){
         rootScene.getChildren().remove(gameScene);

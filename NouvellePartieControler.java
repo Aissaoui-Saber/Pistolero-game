@@ -104,7 +104,6 @@ public class NouvellePartieControler implements Initializable {
                 Main.rootControler.goToMenuScene();
             }
         }
-
     }
     @Override
     public void initialize(URL location, ResourceBundle resources) {

@@ -32,8 +32,8 @@ public class Data {
         gameOverIMG = new Image(this.getClass().getResource("Images/GameOver.png").toExternalForm());
         explosionIMG = new Image(this.getClass().getResource("Images/explosion.gif").toExternalForm());
         bravoIMG = new Image(this.getClass().getResource("Images/bravo.png").toExternalForm());
-        demonMale1Dimension = new Dimension2D(150,106);
-        demonFemale1Dimension = new Dimension2D(71,106);
+        demonMale1Dimension = new Dimension2D(100,71);
+        demonFemale1Dimension = new Dimension2D(48,72);
 
     }
     private static Data instance = new Data();

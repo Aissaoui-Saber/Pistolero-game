@@ -29,7 +29,6 @@ public class Pistol {
             Data.getData().pistolDiagonalRightIMG(),Data.getData().pistolDiagonalLeftIMG()};
 
     private ImageView pistol;
-    private int speed;
 
     AnimationTimer upTimer;
     AnimationTimer rightTimer;
@@ -59,7 +58,6 @@ public class Pistol {
         pistol.setFitHeight(90);
         pistol.setX(600);
         pistol.setY(600);
-        speed = 10;
 
         pistol.requestFocus();
 
@@ -265,26 +263,26 @@ public class Pistol {
     //DEPLACEMENT
     private void moveUp(){
         if (vivant.get()){
-            if (this.pistol.getY()-speed > 0)
-                this.pistol.setY(this.pistol.getY()-speed);
+            if (this.pistol.getY()-GameConfig.getInstance().getPistolSpeed() > 0)
+                this.pistol.setY(this.pistol.getY()-GameConfig.getInstance().getPistolSpeed());
         }
     }
     private void moveRight(){
         if (vivant.get()) {
-            if (this.pistol.getX() + speed < 1210)
-                this.pistol.setX(this.pistol.getX() + speed);
+            if (this.pistol.getX() + GameConfig.getInstance().getPistolSpeed() < 1210)
+                this.pistol.setX(this.pistol.getX() + GameConfig.getInstance().getPistolSpeed());
         }
     }
     private void moveDown() {
         if (vivant.get()) {
-            if (this.pistol.getY() + speed < 640)
-                this.pistol.setY(this.pistol.getY() + speed);
+            if (this.pistol.getY() + GameConfig.getInstance().getPistolSpeed() < 640)
+                this.pistol.setY(this.pistol.getY() + GameConfig.getInstance().getPistolSpeed());
         }
     }
     private void moveLeft(){
         if (vivant.get()){
-            if (this.pistol.getX() - speed > 0)
-                this.pistol.setX(this.pistol.getX() - speed);
+            if (this.pistol.getX() - GameConfig.getInstance().getPistolSpeed() > 0)
+                this.pistol.setX(this.pistol.getX() - GameConfig.getInstance().getPistolSpeed());
         }
     }
     public void tuer(){
