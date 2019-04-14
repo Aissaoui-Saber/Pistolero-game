@@ -2,6 +2,9 @@ package sample;
 
 import javafx.animation.AnimationTimer;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
@@ -20,11 +23,12 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.util.Duration;
 
 import javax.naming.Binding;
 
 
-public class Pistol {
+public class Pistol extends ImageView{
     private Image images[] = {Data.getData().pistolVerticalIMG(),Data.getData().pistolHorisontalIMG(),
             Data.getData().pistolDiagonalRightIMG(),Data.getData().pistolDiagonalLeftIMG()};
 
@@ -45,43 +49,58 @@ public class Pistol {
     private Key fire = GameConfig.getInstance().getFireKey();
     private Key pause = GameConfig.getInstance().getPauseKey();
 
-    private Thread explosion;
+    private Timeline explosionAnimation;
 
-    public BooleanProperty vivant;
+    public BooleanProperty deadProperty;
+    public BooleanProperty isExplosingProperty;
 
     public Pistol(){
-        //INITIALISATION DE PISTOLET
-        pistol = new ImageView();
-        pistol.setFocusTraversable(true);
-        pistol.setImage(images[0]);
-        pistol.setFitWidth(80);
-        pistol.setFitHeight(90);
-        pistol.setX(600);
-        pistol.setY(600);
+        //INITIALISATION DE PISTOLET------------------------------------------------------------------------------
+        this.setFocusTraversable(true);
+        this.setImage(images[0]);
+        this.setFitWidth(80);
+        this.setFitHeight(90);
+        this.setX(600);
+        this.setY(600);
+        this.requestFocus();
+        pistol = this;
+        deadProperty = new SimpleBooleanProperty(false);
+        isExplosingProperty = new SimpleBooleanProperty(false);
+        //--------------------------------------------------------------------------------------------------------
 
-        pistol.requestFocus();
 
-        vivant = new SimpleBooleanProperty(true);
 
-        explosion = new Thread(new Runnable() {
+
+        //EXPLOSION------------------------------------------------------------------------------------------------
+        isExplosingProperty.addListener(new ChangeListener<Boolean>() {
             @Override
-            public void run() {
-                try {
-                    Thread.sleep(600);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                pistol.setY(1000);
+            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                if (newValue.booleanValue())
+                    pistol.setImage(Data.getData().explosionIMG());
             }
         });
+        KeyFrame debutExplosion = new KeyFrame(Duration.ZERO,null);
+        KeyFrame finExplosion = new KeyFrame(Duration.millis(1000),new KeyValue(deadProperty,true));
+        explosionAnimation = new Timeline();
+        explosionAnimation.getKeyFrames().addAll(debutExplosion,finExplosion);
+        //--------------------------------------------------------------------------------------------------------
 
+
+
+
+        //BINDING POSITION DE PISTOLET AVEC POSITION DE TIR DES BALLS---------------------------------------------
         ballOutXProperty = new SimpleIntegerProperty();
         ballOutYProperty = new SimpleIntegerProperty();
 
-        ballOutXProperty.bind(Bindings.add(pistol.xProperty(),35));
-        ballOutYProperty.bind(pistol.yProperty());
+        ballOutXProperty.bind(Bindings.add(this.xProperty(),35));
+        ballOutYProperty.bind(this.yProperty());
+        //-------------------------------------------------------------------------------------------------------
 
-        //LES ANIMATIONS DES DEPLACEMENTS
+
+
+
+
+        //LES ANIMATIONS DES DEPLACEMENTS----------------------------------------------------------------------------
         upTimer = new AnimationTimer() {
             @Override
             public void handle(long now) {
@@ -147,11 +166,17 @@ public class Pistol {
                 }
             }
         });
+        //---------------------------------------------------------------------------------------------------------
 
-        pistol.setOnKeyPressed(new EventHandler<KeyEvent>() {
+
+
+
+
+
+        this.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent event) {
-                if (vivant.get()) {
+                if (!isExplosingProperty.get()) {
                     if (event.getCode() == up.getCode()) {
                         up.setPressed();
                         if (left.isPressed()) {
@@ -201,10 +226,10 @@ public class Pistol {
                 }
             }
         });
-        pistol.setOnKeyReleased(new EventHandler<KeyEvent>() {
+        this.setOnKeyReleased(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent event) {
-                if (vivant.get()) {
+                if (!isExplosingProperty.get()) {
                     if (event.getCode() == up.getCode()) {
                         up.setReleased();
                         if (left.isPressed()) {
@@ -257,42 +282,37 @@ public class Pistol {
         });
     }
 
-    public ImageView getPistol(){
-        return pistol;
-    }
-    //DEPLACEMENT
+    //DEPLACEMENT----------------------------------------------------------------------------------------------
     private void moveUp(){
-        if (vivant.get()){
-            if (this.pistol.getY()-GameConfig.getInstance().getPistolSpeed() > 0)
-                this.pistol.setY(this.pistol.getY()-GameConfig.getInstance().getPistolSpeed());
+        if (!isExplosingProperty.get()){
+            if (this.getY()-GameConfig.getInstance().getPistolSpeed() > 0)
+                this.setY(this.getY()-GameConfig.getInstance().getPistolSpeed());
         }
     }
     private void moveRight(){
-        if (vivant.get()) {
-            if (this.pistol.getX() + GameConfig.getInstance().getPistolSpeed() < 1210)
-                this.pistol.setX(this.pistol.getX() + GameConfig.getInstance().getPistolSpeed());
+        if (!isExplosingProperty.get()) {
+            if (this.getX() + GameConfig.getInstance().getPistolSpeed() < 1210)
+                this.setX(this.getX() + GameConfig.getInstance().getPistolSpeed());
         }
     }
     private void moveDown() {
-        if (vivant.get()) {
-            if (this.pistol.getY() + GameConfig.getInstance().getPistolSpeed() < 640)
-                this.pistol.setY(this.pistol.getY() + GameConfig.getInstance().getPistolSpeed());
+        if (!isExplosingProperty.get()) {
+            if (this.getY() + GameConfig.getInstance().getPistolSpeed() < 640)
+                this.setY(this.getY() + GameConfig.getInstance().getPistolSpeed());
         }
     }
     private void moveLeft(){
-        if (vivant.get()){
-            if (this.pistol.getX() - GameConfig.getInstance().getPistolSpeed() > 0)
-                this.pistol.setX(this.pistol.getX() - GameConfig.getInstance().getPistolSpeed());
+        if (!isExplosingProperty.get()){
+            if (this.getX() - GameConfig.getInstance().getPistolSpeed() > 0)
+                this.setX(this.getX() - GameConfig.getInstance().getPistolSpeed());
         }
     }
-    public void tuer(){
-        vivant.set(false);
-        Data.getData().gameOverSFX();
-        pistol.setImage(Data.getData().explosionIMG());
+    //-----------------------------------------------------------------------------------------------------------
 
-        explosion.start();
+
+    public void tuer(){
+        this.isExplosingProperty.set(true);
+        explosionAnimation.play();
     }
-    public boolean intersect(Node n){
-        return this.pistol.getBoundsInParent().intersects(n.getBoundsInParent());
-    }
+
 }

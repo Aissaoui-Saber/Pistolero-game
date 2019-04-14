@@ -1,29 +1,21 @@
 package sample;
 
 import javafx.animation.AnimationTimer;
-import javafx.beans.Observable;
+
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.geometry.Bounds;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.Pane;
-import javafx.scene.shape.Shape;
 
-import java.awt.*;
+import javafx.scene.image.ImageView;
+
 
 
 public class Ball extends ImageView{
-    //private ImageView ball;
     private int ballSpeed = 20;
     private AnimationTimer mouvment;
     private double degat;
     public BooleanProperty blocked;
 
     public Ball(int x,int y,double Degat){
-        //ball = new ImageView(Data.getData().bulletIMG());
         this.setImage(Data.getData().bulletIMG());
         this.setX(x);
         this.setY(y);
@@ -38,10 +30,6 @@ public class Ball extends ImageView{
         };
         degat = Degat;
     }
-
-    /*public ImageView getBallImageView() {
-        return ball;
-    }*/
 
     private void moveToTop(){
         if (this.getY() > -20){
@@ -58,17 +46,9 @@ public class Ball extends ImageView{
         this.mouvment.stop();
         Main.rootControler.partieControler.gameScene.getChildren().remove(this);
         this.blocked.set(true);
-        //this.setY(1000);
-    }
-    public void hide(){
-        //this.getBallImageView().setVisible(false);
     }
 
     public double getDegat() {
         return degat;
-    }
-
-    public void setDegat(double degat) {
-        this.degat = degat;
     }
 }

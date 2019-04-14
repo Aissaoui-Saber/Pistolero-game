@@ -26,6 +26,12 @@ import java.util.Timer;
 
 public class Main extends Application {
     public static RootControler rootControler;
+    public static int randomInt(int minIncl,int maxIncl){
+        return minIncl + (int)(Math.random() * ((maxIncl - minIncl) + 1));
+    }
+    public static double randomDouble(double minIncl,double maxIncl){
+        return minIncl + (Math.random() * ((maxIncl - minIncl) + 1));
+    }
     @Override
     public void start(Stage primaryStage) throws Exception{
         Parent root = new Pane();

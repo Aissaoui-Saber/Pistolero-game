@@ -164,19 +164,13 @@ public class Demon extends ImageView{
     }
 
     private double randomSpeed(){
-        double num1 = randomDouble(0.8,1);
-        double num2 = randomDouble(-1,-0.8);
-        if (randomInt(0,1)==0){
+        double num1 = Main.randomDouble(0.8,1);
+        double num2 = Main.randomDouble(-1,-0.8);
+        if (Main.randomInt(0,1)==0){
             return num1;
         }else {
             return num2;
         }
-    }
-    private int randomInt(int minIncl,int maxIncl){
-        return minIncl + (int)(Math.random() * ((maxIncl - minIncl) + 1));
-    }
-    private double randomDouble(double minIncl,double maxIncl){
-        return minIncl + (Math.random() * ((maxIncl - minIncl) + 1));
     }
 
     public void setSpeedX(double speedX) {
@@ -194,8 +188,11 @@ public class Demon extends ImageView{
     public double getSpeedY() {
         return speedY;
     }
-    public void changeDirection(){
-        speedY *= -1;
+
+    public void changeXdirection(){
         speedX *= -1;
+    }
+    public void changeYdirection(){
+        speedY *= -1;
     }
 }

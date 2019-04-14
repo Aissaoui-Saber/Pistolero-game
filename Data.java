@@ -20,6 +20,7 @@ public class Data {
     private static Image gameOverIMG;
     private static Image explosionIMG;
     private static Image bravoIMG;
+    private static Image boxIMG;
     private static Dimension2D demonMale1Dimension;
     private static Dimension2D demonFemale1Dimension;
 
@@ -42,6 +43,7 @@ public class Data {
         gameOverIMG = new Image(this.getClass().getResource("Images/GameOver.png").toExternalForm());
         explosionIMG = new Image(this.getClass().getResource("Images/explosion.gif").toExternalForm());
         bravoIMG = new Image(this.getClass().getResource("Images/bravo.png").toExternalForm());
+        boxIMG = new Image(this.getClass().getResource("Images/box.jpg").toExternalForm());
         demonMale1Dimension = new Dimension2D(100,71);
         demonFemale1Dimension = new Dimension2D(48,72);
 
@@ -86,9 +88,13 @@ public class Data {
     public Image bulletIMG(){
         return bulletIMG;
     }
-    public Image gameOverIMG(){return gameOverIMG;};
-    public Image explosionIMG(){return explosionIMG;};
-    public Image bravoIMG(){return bravoIMG;};
+    public Image gameOverIMG(){return gameOverIMG;}
+    public Image explosionIMG(){return explosionIMG;}
+    public Image bravoIMG(){return bravoIMG;}
+    public Image boxIMG() {
+        return boxIMG;
+    }
+
     public int demonMale1Height(){return (int)demonMale1Dimension.getHeight();}
     public int demonMale1Width(){return (int)demonMale1Dimension.getWidth();}
     public int demonFemale1Height(){return (int)demonFemale1Dimension.getHeight();}

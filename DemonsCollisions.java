@@ -26,8 +26,8 @@ public class DemonsCollisions {
         demons.get(collisions.get(collisions.size()-1).valueOne).blesser(1000);
     }
     public void changeDirection(ArrayList<Demon> demons,int M,int N){
-        demons.get(M).changeDirection();
-        demons.get(N).changeDirection();
+        //demons.get(M).changeDirection();
+        //demons.get(N).changeDirection();
         collisions.remove(collisions.size()-1);
     }
     public void remove(int index1,int index2){
