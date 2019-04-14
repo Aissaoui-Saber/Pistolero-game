@@ -11,28 +11,31 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.Node;
 import javafx.scene.effect.Bloom;
-import javafx.scene.effect.SepiaTone;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Region;
 import javafx.util.Duration;
 
 
 public class Demon extends ImageView{
-    private boolean sexe;
-    public BooleanProperty isDeadProperty;
+    private boolean male;
     private double speedX;
     private double speedY;
     private AnimationTimer mouvment;
     private HealthBar vie;
     private Timeline explosionAnimation;
-    public BooleanProperty isExplosing;
+
+    public BooleanProperty isExplosingProperty;
+    public BooleanProperty isDeadProperty;
+    public BooleanProperty isMovingProperty;
+
     public Demon(int x, int y,boolean masculin){
         this.setX(x);
         this.setY(y);
         this.speedX = randomSpeed();
         this.speedY = randomSpeed();
         ImageView image = this;
-        sexe = masculin;
+        male = masculin;
+        isMovingProperty = new SimpleBooleanProperty(false);
         if (masculin){
             this.setImage(Data.getData().demonMale1IMG());
             this.setFitWidth(Data.getData().demonMale1Width());
@@ -45,18 +48,18 @@ public class Demon extends ImageView{
             vie = new HealthBar(Data.getData().demonFemale1Width());
         }
         //EXPLOSION--------------------------------------------------------------------------
-        isExplosing = new SimpleBooleanProperty(false);
+        isExplosingProperty = new SimpleBooleanProperty(false);
         isDeadProperty = new SimpleBooleanProperty(false);
-        isExplosing.addListener(new ChangeListener<Boolean>() {
+        isExplosingProperty.addListener(new ChangeListener<Boolean>() {
             @Override
             public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
                 if (newValue)
                     image.setImage(Data.getData().explosionIMG());
             }
         });
-        KeyFrame debutExplosion = new KeyFrame(Duration.ZERO,new KeyValue(this.isExplosing,true));
+        KeyFrame debutExplosion = new KeyFrame(Duration.ZERO,new KeyValue(this.isExplosingProperty,true));
         KeyFrame finExplosion = new KeyFrame(Duration.millis(600),
-                new KeyValue(this.isExplosing,false),
+                new KeyValue(this.isExplosingProperty,false),
                 new KeyValue(this.isDeadProperty,true));
         explosionAnimation = new Timeline();
         explosionAnimation.getKeyFrames().addAll(debutExplosion,finExplosion);
@@ -76,7 +79,7 @@ public class Demon extends ImageView{
 
         //BAR DE VIE BINDING---------------------------------------------------------
         vie.getHealthBar().layoutXProperty().bind(this.xProperty());
-        if (sexe){
+        if (male){
             vie.getHealthBar().layoutYProperty().bind(Bindings.add(this.yProperty(),Data.getData().demonMale1Height()));
         }else{
             vie.getHealthBar().layoutYProperty().bind(Bindings.add(this.yProperty(),Data.getData().demonFemale1Height()));
@@ -93,6 +96,7 @@ public class Demon extends ImageView{
         playEffect();
         if (vie.getValue() <= 0){
             mouvment.stop();
+            Data.getData().explosionSFX();
             explosionAnimation.play();
             vie.hide();
         }
@@ -106,9 +110,11 @@ public class Demon extends ImageView{
         timeline.play();
     }
     void move() {
+        isMovingProperty.set(true);
         /* deplacer le centre de la particule */
         this.setX(this.getX() + speedX * GameConfig.getInstance().getDemonsSpeed());
         this.setY(this.getY() + speedY * GameConfig.getInstance().getDemonsSpeed());
+        isMovingProperty.set(false);
 
         /* detecter les collision avec le bord
          * et si collision modifier le vecteur de la vitesse */
@@ -153,6 +159,10 @@ public class Demon extends ImageView{
         this.mouvment.start();
     }
 
+    public boolean isMale() {
+        return male;
+    }
+
     private double randomSpeed(){
         double num1 = randomDouble(0.8,1);
         double num2 = randomDouble(-1,-0.8);
@@ -167,5 +177,25 @@ public class Demon extends ImageView{
     }
     private double randomDouble(double minIncl,double maxIncl){
         return minIncl + (Math.random() * ((maxIncl - minIncl) + 1));
+    }
+
+    public void setSpeedX(double speedX) {
+        this.speedX = speedX;
+    }
+
+    public void setSpeedY(double speedY) {
+        this.speedY = speedY;
+    }
+
+    public double getSpeedX() {
+        return speedX;
+    }
+
+    public double getSpeedY() {
+        return speedY;
+    }
+    public void changeDirection(){
+        speedY *= -1;
+        speedX *= -1;
     }
 }

@@ -3,6 +3,9 @@ package sample;
 
 import javafx.geometry.Dimension2D;
 import javafx.scene.image.Image;
+import javafx.scene.media.AudioClip;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 
 public class Data {
     private static Image gameBackgroundIMG;
@@ -19,6 +22,13 @@ public class Data {
     private static Image bravoIMG;
     private static Dimension2D demonMale1Dimension;
     private static Dimension2D demonFemale1Dimension;
+
+    private static AudioClip ballShootSFX;
+    private static AudioClip explosionSFX;
+    private static AudioClip gameOverSFX;
+    private static MediaPlayer backgroundMusicPlayer;
+    private static Media music;
+    private static AudioClip gameWinSFX;
     private Data(){
         gameBackgroundIMG = new Image(this.getClass().getResource("Images/background.jpg").toExternalForm());
         menuBacgroundIMG = new Image(this.getClass().getResource("Images/menuBackground.jpg").toExternalForm());
@@ -34,6 +44,15 @@ public class Data {
         bravoIMG = new Image(this.getClass().getResource("Images/bravo.png").toExternalForm());
         demonMale1Dimension = new Dimension2D(100,71);
         demonFemale1Dimension = new Dimension2D(48,72);
+
+        ballShootSFX = new AudioClip(this.getClass().getResource("Sounds/ballShoot.mp3").toString());
+        explosionSFX = new AudioClip(this.getClass().getResource("Sounds/explosion.mp3").toString());
+        gameOverSFX = new AudioClip(this.getClass().getResource("Sounds/gameOver.mp3").toString());
+        gameWinSFX = new AudioClip(this.getClass().getResource("Sounds/gameWin.mp3").toString());
+
+        music = new Media(this.getClass().getResource("Sounds/Cripsy.wav").toString());
+        backgroundMusicPlayer = new MediaPlayer(music);
+
 
     }
     private static Data instance = new Data();
@@ -74,4 +93,31 @@ public class Data {
     public int demonMale1Width(){return (int)demonMale1Dimension.getWidth();}
     public int demonFemale1Height(){return (int)demonFemale1Dimension.getHeight();}
     public int demonFemale1Width(){return (int)demonFemale1Dimension.getWidth();}
+
+    public void ballShootSFX() {
+        ballShootSFX.play();
+    }
+    public void explosionSFX() {
+        explosionSFX.play();
+    }
+    public void backgroundMusic(){
+        Thread t =new Thread(new Runnable() {
+            @Override
+            public void run() {
+                backgroundMusicPlayer.setVolume(0.4);
+                backgroundMusicPlayer.play();
+                backgroundMusicPlayer.setCycleCount(MediaPlayer.INDEFINITE);
+            }
+        });
+        t.start();
+
+    }
+    public void gameOverSFX(){
+        backgroundMusicPlayer.setVolume(0.1);
+        gameOverSFX.play();
+    }
+    public void gameWinSFX(){
+        backgroundMusicPlayer.setVolume(0.1);
+        gameWinSFX.play();
+    }
 }

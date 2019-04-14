@@ -287,7 +287,9 @@ public class Pistol {
     }
     public void tuer(){
         vivant.set(false);
+        Data.getData().gameOverSFX();
         pistol.setImage(Data.getData().explosionIMG());
+
         explosion.start();
     }
     public boolean intersect(Node n){

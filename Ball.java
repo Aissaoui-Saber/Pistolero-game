@@ -52,6 +52,7 @@ public class Ball extends ImageView{
     }
     public void start(){
         this.mouvment.start();
+        Data.getData().ballShootSFX();
     }
     public void stop(){
         this.mouvment.stop();

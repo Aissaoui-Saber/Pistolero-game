@@ -1,26 +1,26 @@
 package sample;
 
+import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.concurrent.Task;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
-import javafx.scene.effect.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
+import javafx.scene.media.MediaPlayer;
 
+import javax.print.attribute.standard.Media;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
-import java.util.concurrent.ExecutorService;
 
 public class PartieControler implements Initializable {
     @FXML
@@ -31,6 +31,7 @@ public class PartieControler implements Initializable {
     private Label nbrDemonsLabel = new Label();
 
     private Thread demonGenerator;
+    private Thread demonsCollision;
 
     private ImageView gameOverIMG;
     private ImageView bravoIMG;
@@ -38,6 +39,7 @@ public class PartieControler implements Initializable {
     private ArrayList<Demon> demons;
     private ArrayList<Ball> balls;
     private Pistol pistolet;
+    private DemonsCollisions demonsCollisions;
 
     public IntegerProperty nbrBallsProperty;
     public IntegerProperty nbrDemonsMorts;
@@ -67,6 +69,8 @@ public class PartieControler implements Initializable {
         nbrDemonsMorts = new SimpleIntegerProperty(0);
         nbrBallsProperty = new SimpleIntegerProperty(nBall);
         partieEnCour = new SimpleBooleanProperty(false);
+        demonsCollisions = new DemonsCollisions();
+
 
 
         //FIN DE LA PARTIE (GAME OVER / BRAVO)---------------------------------------------------------------------
@@ -122,6 +126,7 @@ public class PartieControler implements Initializable {
                 nbrDemonsLabel.setText("  "+newValue+"/"+nDemons+" ");
                 if ((int)newValue == nDemons){//FIN DE LA PARTIE (TOUT DEMONS MORTS)
                     gameScene.getChildren().add(bravoIMG);
+                    Data.getData().gameWinSFX();
                     partieEnCour.set(false);
                 }
             }
@@ -129,7 +134,7 @@ public class PartieControler implements Initializable {
         //-------------------------------------------------------------------------------------------------------
 
         //METRE L'AFFICHAGE DE NOMBRE DE BALLS ET NBR DE DEMONS AU PREMIER PLAN----------------------------------
-        Node n = gameScene.getChildren().get(1);
+        Node node = gameScene.getChildren().get(1);
         gameScene.getChildren().remove(1);
         //PISTOLET
         gameScene.getChildren().add(pistolet.getPistol());
@@ -156,6 +161,7 @@ public class PartieControler implements Initializable {
                             gameScene.getChildren().add(balls.get(balls.size() - 1));
                             balls.get(balls.size() - 1).start();
                         }
+
                         if (balls.size()>0){
                             if (balls.get(0).blocked.get()){
                                 balls.remove(0);
@@ -204,27 +210,15 @@ public class PartieControler implements Initializable {
             gameScene.getChildren().add(demons.get(i).getVie().getHealthBar());
 
             //LORSQUE UN DEMON TOUCHE LE PISTOLET, LE PISTOLET S'EXPLOSE
-            demons.get(k).yProperty().addListener(new ChangeListener<Number>() {
+            demons.get(k).isMovingProperty.addListener(new ChangeListener<Boolean>() {
                 @Override
-                public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-                    if (demons.get(k).intersects(pistolet.getPistol())) {
-                        if (pistolet.vivant.get()){
-                            demons.get(k).stop();
-                            pistolet.tuer();
+                public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                        if (demons.get(k).intersects(pistolet.getPistol())) {
+                            if (pistolet.vivant.get()){
+                                demons.get(k).stop();
+                                pistolet.tuer();
+                            }
                         }
-
-                    }
-                }
-            });
-            demons.get(k).xProperty().addListener(new ChangeListener<Number>() {
-                @Override
-                public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-                    if (demons.get(k).intersects(pistolet.getPistol())) {
-                        if (pistolet.vivant.get()){
-                            demons.get(k).stop();
-                            pistolet.tuer();
-                        }
-                    }
                 }
             });
             //LORSQUE UN DEMON EST TUEE, INCREMENTER LE NBR DE DEMONS MORTS
@@ -245,7 +239,7 @@ public class PartieControler implements Initializable {
                 public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
                     if (pistolet.getPistol().intersects(demons.get(k).getBoundsInParent())) {
                         if (pistolet.vivant.get()) {
-                            if (!demons.get(k).isExplosing.get()){
+                            if (!demons.get(k).isExplosingProperty.get()){
                                 pistolet.tuer();
                                 demons.get(k).stop();
                             }
@@ -259,7 +253,7 @@ public class PartieControler implements Initializable {
                 public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
                     if (pistolet.getPistol().intersects(demons.get(k).getBoundsInParent())) {
                         if (pistolet.vivant.get()) {
-                            if (!demons.get(k).isExplosing.get()){
+                            if (!demons.get(k).isExplosingProperty.get()){
                                 pistolet.tuer();
                                 demons.get(k).stop();
                             }
@@ -268,9 +262,60 @@ public class PartieControler implements Initializable {
                 }
             });
         }
-        gameScene.getChildren().add(n);
+        gameScene.getChildren().add(node);
+        //-------------------------------------------------------------------------------------------------------
+
+        //COLLISION DES DEMONS ENTRE EUX-------------------------------------------------------------------------
+        /*demonsCollision = new Thread(new Runnable() {
+            @Override
+            public void run() {*/
+                for (int i=0;i<demons.size();i++){
+                    for(int j=0;j<demons.size();j++){
+                        int m = i;
+                        int n = j;
+                        if (i!=j){
+                            demons.get(i).isMovingProperty.addListener(new ChangeListener<Boolean>() {
+                                @Override
+                                public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                                    if (demons.get(m).getBoundsInParent().intersects(demons.get(n).getBoundsInParent())){
+                                        if (demons.get(m).isMale() && demons.get(n).isMale()){
+                                            if (!demons.get(m).isExplosingProperty.get()){
+                                                if (!demonsCollisions.exists(m,n)){
+                                                    demonsCollisions.add(m,n);
+                                                    demonsCollisions.destroyOneDemon(demons);
+                                                }
+                                            }
+                                        }else if (demons.get(m).isMale() && !demons.get(n).isMale()){
+                                            if (!demons.get(m).isExplosingProperty.get()){
+                                                if (!demonsCollisions.exists(m,n)){
+                                                    demonsCollisions.add(m,n);
+                                                    demons.get(m).changeDirection();
+                                                    demons.get(n).changeDirection();
+                                                    demonsCollisions.remove(m,n);
+
+                                                    /*if (randomInt(0,1) == 1){
+                                                        demons.add(new Demon((int)demons.get(m).getX(),(int)demons.get(m).getY(),true));
+                                                    }else {
+                                                        demons.add(new Demon((int)demons.get(m).getX(),(int)demons.get(m).getY(),false));
+                                                    }
+                                                    gameScene.getChildren().add(demons.get(demons.size()-1));
+                                                    gameScene.getChildren().add(demons.get(demons.size()-1).getVie().getHealthBar());
+                                                    demons.get(demons.size()-1).start();*/
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    }
+                }
+            /*}
+        });
+        demonsCollision.start();*/
         //-------------------------------------------------------------------------------------------------------
     }
+
 
     //INTERSECTION D'UNE BALLS AVEC LES DEMONS-------------------------------------------------------------------
     private void ballColusion(Ball b){
@@ -279,10 +324,9 @@ public class PartieControler implements Initializable {
             balls.get(balls.size()-1).yProperty().addListener(new ChangeListener<Number>() {
                 @Override
                 public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-                    if (!((Demon)(demons.get(k))).isDeadProperty.get() && !((Demon)(demons.get(k))).isExplosing.get()) {
+                    if (!((Demon)(demons.get(k))).isDeadProperty.get() && !((Demon)(demons.get(k))).isExplosingProperty.get()) {
                         if (b.getBoundsInParent().intersects(((Demon) (demons.get(k))).getBoundsInLocal())) {
                             if (!b.blocked.get()) {
-                                demons.get(k).effectProperty().set(new SepiaTone());
                                 b.blocked.set(true);
                                 ((Demon) (demons.get(k))).blesser(b.getDegat());
                                 b.stop();
@@ -294,9 +338,19 @@ public class PartieControler implements Initializable {
         }
     }
     //-----------------------------------------------------------------------------------------------------------
-
+    //LORSQUE UN DEMON TOUCH UN AUTRE----------------------------------------------------------------------------
+    private void destroyOneDemon(Demon d1,Demon d2){
+        if (randomInt(0,1) == 1){
+            d1.blesser(1000);
+        }else {
+            d2.blesser(1000);
+        }
+    }
+    //-----------------------------------------------------------------------------------------------------------
     public void startGame(){
         partieEnCour.set(true);
+        Data.getData().backgroundMusic();
+
         demonGenerator = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -304,7 +358,7 @@ public class PartieControler implements Initializable {
                 while (partieEnCour.get()) {
                     demons.get(f).start();
                     try {
-                        Thread.sleep(2000);
+                        Thread.sleep(1000);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
