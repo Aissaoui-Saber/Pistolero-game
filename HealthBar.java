@@ -16,6 +16,7 @@ public class HealthBar{
     private Rectangle frontRectangle;
     private Rectangle backRectangle;
     private Group g;
+    private double value;
 
     public HealthBar(int width){
         g = new Group();
@@ -35,7 +36,8 @@ public class HealthBar{
         this.frontRectangle.setWidth(v);
         this.backRectangle.setWidth(v);
     }
-    public void setValue(double value){
+    public void setValue(double v){
+        this.value = v;
         if (value >= 100){
             this.frontRectangle.setWidth(this.backRectangle.getWidth());
         }else if (value <= 0){

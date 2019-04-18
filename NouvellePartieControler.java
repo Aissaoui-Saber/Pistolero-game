@@ -93,12 +93,11 @@ public class NouvellePartieControler implements Initializable {
                     Main.rootControler.partieControler.partie = null;
                 }*/
                 if (indexNbrBall == 205){
-                    Main.rootControler.partieControler.nouvellePartie(-1,indexNbrDemon);
+                    Main.rootControler.partieControler.nouvellePartie(-1,indexNbrDemon,false);
                 }else {
-                    Main.rootControler.partieControler.nouvellePartie(indexNbrBall*5,indexNbrDemon);
+                    Main.rootControler.partieControler.nouvellePartie(indexNbrBall*5,indexNbrDemon,false);
                 }
                 Main.rootControler.goToGameScene();
-                Main.rootControler.partieControler.startGame();
             }
             if (index == 3){
                 Main.rootControler.goToMenuScene();

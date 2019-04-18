@@ -10,7 +10,7 @@ import javafx.scene.image.ImageView;
 
 
 public class Ball extends ImageView{
-    private int ballSpeed = 20;
+    private int ballSpeed = 25;
     private AnimationTimer mouvment;
     private double degat;
     public BooleanProperty blocked;

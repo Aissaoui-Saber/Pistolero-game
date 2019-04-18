@@ -1,23 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.image.Image?>
-<?import sample.Pistol?>
 <Pane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="sample.PartieControler"
             prefHeight="720.0" prefWidth="1280.0" fx:id="gameScene" stylesheets="@Style.css">
-    <ImageView>
+    <ImageView fx:id="backIMG">
         <Image url="@Images/background.jpg"/>
     </ImageView>
     <HBox layoutX="20" layoutY="680" style="-fx-background-color:rgba(43, 43, 43, 0.6);" alignment="CENTER" fx:id="hbox">
-        <Label text="" styleClass="partieLabels" fx:id="nbrBallLabel" ></Label>
+        <Label styleClass="partieLabels" fx:id="nbrBallLabel" />
         <ImageView fitWidth="15" fitHeight="30">
             <Image url="@Images/Bullet.png"/>
         </ImageView>
@@ -28,9 +24,9 @@
             <Image url="@Images/Bullet.png"/>
         </ImageView>
 
-        <Label text="  0/0 " styleClass="partieLabels" fx:id="nbrDemonsLabel" ></Label>
+        <Label text="  0/0 " styleClass="partieLabels" fx:id="nbrDemonsLabel" />
         <ImageView fitWidth="40" fitHeight="35">
-            <Image url="@Images/demon.gif"/>
+            <Image url="@Images/demonF1.gif"/>
         </ImageView>
     </HBox>
 </Pane>

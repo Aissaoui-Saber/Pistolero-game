@@ -28,7 +28,7 @@ public class Demon extends ImageView{
     public BooleanProperty isDeadProperty;
     public BooleanProperty isMovingProperty;
 
-    public Demon(int x, int y,boolean masculin){
+    public Demon(int x, int y,boolean masculin,double health){
         this.setX(x);
         this.setY(y);
         this.speedX = randomSpeed();
@@ -47,15 +47,13 @@ public class Demon extends ImageView{
             this.setFitHeight(Data.getData().demonFemale1Height());
             vie = new HealthBar(Data.getData().demonFemale1Width());
         }
+        vie.setValue(health);
         //EXPLOSION--------------------------------------------------------------------------
         isExplosingProperty = new SimpleBooleanProperty(false);
         isDeadProperty = new SimpleBooleanProperty(false);
-        isExplosingProperty.addListener(new ChangeListener<Boolean>() {
-            @Override
-            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-                if (newValue)
-                    image.setImage(Data.getData().explosionIMG());
-            }
+        isExplosingProperty.addListener((observable, oldValue, newValue) -> {
+            if (newValue)
+                image.setImage(Data.getData().explosionIMG());
         });
         KeyFrame debutExplosion = new KeyFrame(Duration.ZERO,new KeyValue(this.isExplosingProperty,true));
         KeyFrame finExplosion = new KeyFrame(Duration.millis(600),

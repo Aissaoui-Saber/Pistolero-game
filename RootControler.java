@@ -88,16 +88,4 @@ public class RootControler implements Initializable {
         rootScene.getChildren().clear();
         rootScene.getChildren().add(optionsScene);
     }
-    public void reloadGameScene(){
-        rootScene.getChildren().remove(gameScene);
-        partieControler.clearScene();
-        gameLoader = new FXMLLoader();
-        gameLoader.setLocation(getClass().getResource("Game.fxml"));
-        try {
-            gameScene = gameLoader.load();
-        }catch (IOException e){
-            e.printStackTrace();
-        }
-        partieControler = gameLoader.getController();
-    }
 }

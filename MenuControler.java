@@ -42,17 +42,28 @@ public class MenuControler implements Initializable {
         if (event.getCode() == KeyCode.ENTER){
             switch (menuIndex){
                 case 0:
+                    //NEW GAME
                     Main.rootControler.goToNouvellePartieScene();
-                    //Main.rootControler.partieControler.nouvellePartie(80,20);
-                    //Main.rootControler.partieControler.startGame();
-                    break;
-                case 2:
-                    //LOAD GAME
                     break;
                 case 1:
+                    //LOAD GAME
+                    Main.rootControler.partieControler.nouvellePartie(0,0,true);
+                    Main.rootControler.goToGameScene();
+                    break;
+                case 2:
                     //SAVE GAME
+                    if (Main.rootControler.partieControler.partieEnPause != null) {
+                        if (Main.rootControler.partieControler.partieFini != null){
+                            if (Main.rootControler.partieControler.partieEnPause.get()){
+                                if (!Main.rootControler.partieControler.partieFini.get()){
+                                    Main.rootControler.partieControler.sauvgarderPartie();
+                                }
+                            }
+                        }
+                    }
                     break;
                 case 3:
+                    //OPTIONS
                     Main.rootControler.goToOptionsScene();
                     break;
                 case 4:
@@ -62,11 +73,16 @@ public class MenuControler implements Initializable {
             }
         }
         if (event.getCode() == KeyCode.ESCAPE){
-            /*
-            if (Main.rootControler.partieControler.partie != null)
-                Main.rootControler.goToGameScene();
-            System.out.println("Escape from menu listener");
-            */
+            if (Main.rootControler.partieControler.partieEnPause != null) {
+                if (Main.rootControler.partieControler.partieFini != null){
+                    if (Main.rootControler.partieControler.partieEnPause.get()){
+                        if (!Main.rootControler.partieControler.partieFini.get()){
+                            Main.rootControler.goToGameScene();
+                            Main.rootControler.partieControler.reprendre();
+                        }
+                    }
+                }
+            }
         }
     }
 

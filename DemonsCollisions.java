@@ -42,6 +42,9 @@ public class DemonsCollisions {
             i++;
         }
     }
+    public void clear(){
+        this.collisions.clear();
+    }
 
     private class DemonsCollisionIndex{
         private int valueOne;

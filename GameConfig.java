@@ -31,6 +31,7 @@ public class GameConfig {
     private Key fireKey;
     private Key pauseKey;
     private static final String configFilePath = "src/sample/Config.xml";
+    public static final String gameSaveFilePath = "src/sample/Save.xml";
     private double pistolSpeed;
     private double demonsSpeed;
 
@@ -123,15 +124,15 @@ public class GameConfig {
             transformer.transform(source, result);
 
         } catch (ParserConfigurationException pce) {
-
+            pce.printStackTrace();
         } catch (TransformerException tfe) {
-
+            tfe.printStackTrace();
         } catch (IOException ioe) {
-
+            ioe.printStackTrace();
         } catch (SAXException sae) {
-
+            sae.printStackTrace();
         }catch (Exception e){
-
+            e.printStackTrace();
         }
     }
 

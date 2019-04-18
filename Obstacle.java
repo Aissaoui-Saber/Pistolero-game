@@ -22,14 +22,17 @@ public class Obstacle extends ArrayList<ImageView> {
         this.get(this.size()-1).setY(ligne*40+positionY);
         this.get(this.size()-1).setX(colonne*40+positionX);
     }
+    public void add(int x,int y){
+        this.add(new ImageView(Data.getData().boxIMG()));
+        this.get(this.size()-1).setFitWidth(boxWidth);
+        this.get(this.size()-1).setFitHeight(boxHeight);
+        this.get(this.size()-1).setY(x);
+        this.get(this.size()-1).setX(y);
+    }
     public void randomBoxes(){
         boolean transparent;
         int nbr = Main.randomInt(2,4);
-        if (Main.randomInt(0,1)==1){
-            transparent = true;
-        }else {
-            transparent = false;
-        }
+        transparent = Main.randomInt(0, 1) == 1;
         for (int i=0;i<9;i++){
             nbr = 0;
             for (int j=0;j<(1280/boxWidth);j++){
@@ -70,5 +73,21 @@ public class Obstacle extends ArrayList<ImageView> {
 
     public int getBoxWidth() {
         return boxWidth;
+    }
+
+    public int getPositionX() {
+        return positionX;
+    }
+
+    public int getPositionY() {
+        return positionY;
+    }
+
+    public void setPositionX(int positionX) {
+        this.positionX = positionX;
+    }
+
+    public void setPositionY(int positionY) {
+        this.positionY = positionY;
     }
 }
