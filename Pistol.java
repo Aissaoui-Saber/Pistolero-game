@@ -26,11 +26,13 @@ public class Pistol extends ImageView{
 
     public IntegerProperty ballOutXProperty;
     public IntegerProperty ballOutYProperty;
+    public BooleanProperty blocked;
 
     private Timeline explosionAnimation;
 
     public BooleanProperty deadProperty;
     public BooleanProperty isExplosingProperty;
+    public int movingDirection;
 
 
     public Pistol(int x,int y){
@@ -44,6 +46,7 @@ public class Pistol extends ImageView{
         pistol = this;
         deadProperty = new SimpleBooleanProperty(false);
         isExplosingProperty = new SimpleBooleanProperty(false);
+        blocked = new SimpleBooleanProperty(false);
         //--------------------------------------------------------------------------------------------------------
 
 
@@ -138,4 +141,30 @@ public class Pistol extends ImageView{
         explosionAnimation.play();
     }
 
+    public void unblock(){
+        switch (movingDirection){
+            case 0:
+                while (blocked.get()){
+                    setY(getY()-1);
+                    if (!blocked.get()){
+                        break;
+                    }
+                }
+                break;
+            case 1:
+                break;
+            case 2:
+                break;
+            case 3:
+                break;
+            case 4:
+                break;
+            case 5:
+                break;
+            case 6:
+                break;
+            case 7:
+                break;
+        }
+    }
 }

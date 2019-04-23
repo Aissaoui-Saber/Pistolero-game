@@ -1,5 +1,7 @@
 package sample;
 
+import javafx.animation.ScaleTransition;
+import javafx.animation.Transition;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -14,9 +16,9 @@ import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.util.Duration;
 import org.w3c.dom.*;
 import org.xml.sax.SAXException;
 
@@ -56,7 +58,7 @@ public class PartieControler implements Initializable {
     private Pistol pistolet;
     private DemonsCollisions demonsCollisions;
     private int nbrBallsTotal;
-    private int nbrDemonsTotal;
+    private IntegerProperty nbrDemonsTotal;
     private int demonsIterator;
 
     public IntegerProperty nbrBallsProperty;
@@ -74,42 +76,54 @@ public class PartieControler implements Initializable {
             if (!pistolet.isExplosingProperty.get()) {
                 if (event.getCode() == GameConfig.getInstance().getUpKey().getCode()) {
                     GameConfig.getInstance().getUpKey().setPressed();
-                    if (GameConfig.getInstance().getLeftKey().isPressed()) {
+                    if (GameConfig.getInstance().getLeftKey().isPressed()) {//UP + LEFT
                         pistolet.setImage(Data.getData().pistolDiagonalLeftIMG());
-                    } else if (GameConfig.getInstance().getRightKey().isPressed()) {
+
+                    } else if (GameConfig.getInstance().getRightKey().isPressed()) {//UP + RIGHT
                         pistolet.setImage(Data.getData().pistolDiagonalRightIMG());
-                    } else {
+
+                    } else {//UP
                         pistolet.setImage(Data.getData().pistolVerticalIMG());
+
                     }
                 }
                 if (event.getCode() == GameConfig.getInstance().getDownKey().getCode()) {
                     GameConfig.getInstance().getDownKey().setPressed();
-                    if (GameConfig.getInstance().getLeftKey().isPressed()) {
+                    if (GameConfig.getInstance().getLeftKey().isPressed()) {//DOWN + LEFT
                         pistolet.setImage(Data.getData().pistolDiagonalRightIMG());
-                    } else if (GameConfig.getInstance().getRightKey().isPressed()) {
+
+                    } else if (GameConfig.getInstance().getRightKey().isPressed()) {//DOWN + RIGHT
                         pistolet.setImage(Data.getData().pistolDiagonalLeftIMG());
+
                     } else {
-                        pistolet.setImage(Data.getData().pistolVerticalIMG());
+                        pistolet.setImage(Data.getData().pistolVerticalIMG());//DOWN
+
                     }
                 }
                 if (event.getCode() == GameConfig.getInstance().getLeftKey().getCode()) {
                     GameConfig.getInstance().getLeftKey().setPressed();
-                    if (GameConfig.getInstance().getUpKey().isPressed()) {
+                    if (GameConfig.getInstance().getUpKey().isPressed()) {//LEFT + UP
                         pistolet.setImage(Data.getData().pistolDiagonalLeftIMG());
-                    } else if (GameConfig.getInstance().getDownKey().isPressed()) {
+
+                    } else if (GameConfig.getInstance().getDownKey().isPressed()) {//LEFT + DOWN
                         pistolet.setImage(Data.getData().pistolDiagonalRightIMG());
+
                     } else {
-                        pistolet.setImage(Data.getData().pistolHorisontalIMG());
+                        pistolet.setImage(Data.getData().pistolHorisontalIMG());//LEFT
+
                     }
                 }
                 if (event.getCode() == GameConfig.getInstance().getRightKey().getCode()) {
                     GameConfig.getInstance().getRightKey().setPressed();
-                    if (GameConfig.getInstance().getUpKey().isPressed()) {
+                    if (GameConfig.getInstance().getUpKey().isPressed()) {//RIGHT + UP
                         pistolet.setImage(Data.getData().pistolDiagonalRightIMG());
-                    } else if (GameConfig.getInstance().getDownKey().isPressed()) {
+
+                    } else if (GameConfig.getInstance().getDownKey().isPressed()) {//RIGHT + DOWN
                         pistolet.setImage(Data.getData().pistolDiagonalLeftIMG());
+
                     } else {
-                        pistolet.setImage(Data.getData().pistolHorisontalIMG());
+                        pistolet.setImage(Data.getData().pistolHorisontalIMG());//RIGHT
+
                     }
                 }
                 if (event.getCode() == GameConfig.getInstance().getFireKey().getCode()) {
@@ -127,40 +141,52 @@ public class PartieControler implements Initializable {
                     GameConfig.getInstance().getUpKey().setReleased();
                     if (GameConfig.getInstance().getLeftKey().isPressed()) {
                         pistolet.setImage(Data.getData().pistolDiagonalLeftIMG());
+                        pistolet.movingDirection = 7;
                     } else if (GameConfig.getInstance().getRightKey().isPressed()) {
                         pistolet.setImage(Data.getData().pistolDiagonalRightIMG());
+                        pistolet.movingDirection = 1;
                     } else {
                         pistolet.setImage(Data.getData().pistolVerticalIMG());
+                        pistolet.movingDirection = 0;
                     }
                 }
                 if (event.getCode() == GameConfig.getInstance().getDownKey().getCode()) {
                     GameConfig.getInstance().getDownKey().setReleased();
                     if (GameConfig.getInstance().getLeftKey().isPressed()) {
                         pistolet.setImage(Data.getData().pistolDiagonalRightIMG());
+                        pistolet.movingDirection = 5;
                     } else if (GameConfig.getInstance().getRightKey().isPressed()) {
                         pistolet.setImage(Data.getData().pistolDiagonalLeftIMG());
+                        pistolet.movingDirection = 3;
                     } else {
                         pistolet.setImage(Data.getData().pistolVerticalIMG());
+                        pistolet.movingDirection = 4;
                     }
                 }
                 if (event.getCode() == GameConfig.getInstance().getLeftKey().getCode()) {
                     GameConfig.getInstance().getLeftKey().setReleased();
                     if (GameConfig.getInstance().getUpKey().isPressed()) {
                         pistolet.setImage(Data.getData().pistolDiagonalLeftIMG());
+                        pistolet.movingDirection = 7;
                     } else if (GameConfig.getInstance().getDownKey().isPressed()) {
                         pistolet.setImage(Data.getData().pistolDiagonalRightIMG());
+                        pistolet.movingDirection = 5;
                     } else {
                         pistolet.setImage(Data.getData().pistolHorisontalIMG());
+                        pistolet.movingDirection = 6;
                     }
                 }
                 if (event.getCode() == GameConfig.getInstance().getRightKey().getCode()) {
                     GameConfig.getInstance().getRightKey().setReleased();
                     if (GameConfig.getInstance().getUpKey().isPressed()) {
                         pistolet.setImage(Data.getData().pistolDiagonalRightIMG());
+                        pistolet.movingDirection = 1;
                     } else if (GameConfig.getInstance().getDownKey().isPressed()) {
                         pistolet.setImage(Data.getData().pistolDiagonalLeftIMG());
+                        pistolet.movingDirection = 3;
                     } else {
                         pistolet.setImage(Data.getData().pistolHorisontalIMG());
+                        pistolet.movingDirection = 2;
                     }
                 }
                 if (event.getCode() == GameConfig.getInstance().getFireKey().getCode()) {
@@ -241,7 +267,10 @@ public class PartieControler implements Initializable {
         });
         //-------------------------------------------------------------------------------------------------------
         demonGenerator = () -> {
-            while (!partieEnPause.get() && demonsIterator < demons.size()) {
+            while (!partieEnPause.get() && !partieFini.get()) {
+                if (demonsIterator == nbrDemonsTotal.get()){
+                    demonsIterator = 0;
+                }
                 if (!demons.get(demonsIterator).isDeadProperty.get()) {
                     demons.get(demonsIterator).start();
                     try {
@@ -277,20 +306,20 @@ public class PartieControler implements Initializable {
             pistolet = new Pistol(600,600);
             balls = new ArrayList<>();
             demons = new ArrayList<>();
-            obstacles = new Obstacle(0,200);
+            /*obstacles = new Obstacle(0,200);
             obstacles.randomBoxes();
             for (ImageView obstacle : obstacles) {
                 gameScene.getChildren().add(obstacle);
-            }
+            }*/
             nbrBallsTotal = nBall;
-            nbrDemonsTotal = nDemons;
+            nbrDemonsTotal = new SimpleIntegerProperty(nDemons);
             demonsIterator = 0;
             nbrDemonsMorts = new SimpleIntegerProperty(0);
             nbrBallsProperty = new SimpleIntegerProperty(nBall);
             partieFini = new SimpleBooleanProperty(false);
             partieEnPause = new SimpleBooleanProperty(true);
             demonsCollisions = new DemonsCollisions();
-            for (int i=0;i<nbrDemonsTotal;i++){
+            for (int i=0;i<nbrDemonsTotal.get();i++){
                 if (Main.randomInt(0,1) == 1){
                     demons.add(new Demon(Main.randomInt(0,1130),-200,true,100));
                 }else {
@@ -298,10 +327,10 @@ public class PartieControler implements Initializable {
                 }
                 gameScene.getChildren().add(demons.get(i));
                 gameScene.getChildren().add(demons.get(i).getVie().getHealthBar());
+                demonIntersection(i);
             }
             startGame();
         }
-        initialisationDemons();
 
 
         //FIN DE LA PARTIE (GAME OVER / BRAVO)---------------------------------------------------------------------
@@ -341,13 +370,19 @@ public class PartieControler implements Initializable {
 
 
         //NOMBRE DE DEMONS LABEL---------------------------------------------------------------------------------
-        nbrDemonsLabel.setText("  "+nbrDemonsMorts.get()+"/"+nbrDemonsTotal+" ");
+        nbrDemonsLabel.setText("  "+nbrDemonsMorts.get()+"/"+nbrDemonsTotal.get()+" ");
         nbrDemonsMorts.addListener((observable, oldValue, newValue) -> {
-            nbrDemonsLabel.setText("  "+newValue+"/"+nbrDemonsTotal+" ");
-            if ((int)newValue == nbrDemonsTotal){//FIN DE LA PARTIE (TOUT DEMONS MORTS)
+            nbrDemonsLabel.setText("  "+newValue+"/"+nbrDemonsTotal.get()+" ");
+            if ((int)newValue == nbrDemonsTotal.get()){//FIN DE LA PARTIE (TOUT DEMONS MORTS)
                 gameScene.getChildren().add(bravoIMG);
                 Data.getData().gameWinSFX();
                 partieFini.set(true);
+            }
+        });
+        nbrDemonsTotal.addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+                nbrDemonsLabel.setText("  "+nbrDemonsMorts.get()+"/"+newValue+" ");
             }
         });
         //-------------------------------------------------------------------------------------------------------
@@ -386,68 +421,41 @@ public class PartieControler implements Initializable {
 
 
         //COLLISION DE PISTOLET AVEC LES OBSTACLES---------------------------------------------------------------
-        Thread pistoletObstacleCollision = new Thread(() -> {
-            for (int i=0;i<obstacles.size();i++){
-                int k = i;
-                pistolet.xProperty().addListener((observable, oldValue, newValue) -> {
-                    if (pistolet.getBoundsInParent().intersects(obstacles.get(k).getBoundsInParent())){
-                        pistolet.setX(oldValue.intValue());
+        /*for (int i=0;i<obstacles.size();i++){
+            int k = i;
+            pistolet.xProperty().addListener((observable, oldValue, newValue) -> {
+                if (pistolet.intersects(obstacles.get(k).getBoundsInParent())){
+                    //pistolet.setX(oldValue.intValue());
+                    pistolet.blocked.set(true);
+                }else {
+                    pistolet.blocked.set(false);
+                }
+            });
+            pistolet.yProperty().addListener((observable, oldValue, newValue) -> {
+                if (pistolet.intersects(obstacles.get(k).getBoundsInParent())){
+                    if (pistolet.intersects(obstacles.get(k).getBoundsInParent())){
+                        //pistolet.setX(oldValue.intValue());
+                        pistolet.blocked.set(true);
+                    }else {
+                        pistolet.blocked.set(false);
                     }
-                });
-                pistolet.yProperty().addListener((observable, oldValue, newValue) -> {
-                    if (pistolet.getBoundsInParent().intersects(obstacles.get(k).getBoundsInParent())){
-                        pistolet.setY(oldValue.intValue());
-                    }
-                });
-            }
-        });
-        pistoletObstacleCollision.start();
-        //-------------------------------------------------------------------------------------------------------
-
-
-
-
-
-        //COLLISION DES DEMONS ENTRE EUX-------------------------------------------------------------------------
-        for (int i=0;i<demons.size();i++){
-            for(int j=0;j<demons.size();j++){
-                int m = i;
-                int n = j;
-                if (i!=j){
-                    demons.get(i).isMovingProperty.addListener((observable, oldValue, newValue) -> {
-                        if (demons.get(m).getBoundsInParent().intersects(demons.get(n).getBoundsInParent())){
-                            if (demons.get(m).isMale() && demons.get(n).isMale()){
-                                if (!demons.get(m).isExplosingProperty.get()){
-                                    if (!demonsCollisions.exists(m,n)){
-                                        demonsCollisions.add(m,n);
-                                        demonsCollisions.destroyOneDemon(demons);
-                                    }
-                                }
-                            }else if (demons.get(m).isMale() && !demons.get(n).isMale()){
-                                if (!demons.get(m).isExplosingProperty.get()){
-                                    if (!demonsCollisions.exists(m,n)){
-                                        demonsCollisions.add(m,n);
-                                        //demons.get(m).changeDirection();
-                                        //demons.get(n).changeDirection();
-                                        demonsCollisions.remove(m,n);
-
-                                        /*if (randomInt(0,1) == 1){
-                                            demons.add(new Demon((int)demons.get(m).getX(),(int)demons.get(m).getY(),true));
-                                        }else {
-                                            demons.add(new Demon((int)demons.get(m).getX(),(int)demons.get(m).getY(),false));
-                                        }
-                                        gameScene.getChildren().add(demons.get(demons.size()-1));
-                                        gameScene.getChildren().add(demons.get(demons.size()-1).getVie().getHealthBar());
-                                        demons.get(demons.size()-1).start();*/
-                                    }
-                                }
-                            }
-                        }
-                    });
+                }
+            });
+        }
+        pistolet.blocked.addListener(new ChangeListener<Boolean>() {
+            @Override
+            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                if (newValue){
+                    //pistolet.unblock();
                 }
             }
-        }
+        });*/
         //-------------------------------------------------------------------------------------------------------
+
+
+
+
+
 
 
 
@@ -479,7 +487,7 @@ public class PartieControler implements Initializable {
                 });
             }
         });
-        Thread t2 = new Thread(() -> {
+        /*Thread t2 = new Thread(() -> {
             for(int i=0;i<obstacles.size();i++){
                 int k = i;
                 b.yProperty().addListener((observable, oldValue, newValue) -> {
@@ -491,9 +499,9 @@ public class PartieControler implements Initializable {
                     }
                 });
             }
-        });
+        });*/
         t1.start();
-        t2.start();
+        //t2.start();
         balls.add(b);
         gameScene.getChildren().add(b);
         b.start();
@@ -546,18 +554,18 @@ public class PartieControler implements Initializable {
                 gameScene.getChildren().add(demons.get(i));
                 gameScene.getChildren().add(demons.get(i).getVie().getHealthBar());
                 nbrDemonsMorts = new SimpleIntegerProperty(Integer.valueOf(doc.getElementsByTagName("demons").item(0).getAttributes().item(1).getNodeValue()));
-                nbrDemonsTotal = Integer.valueOf(doc.getElementsByTagName("demons").item(0).getAttributes().item(0).getNodeValue());
+                nbrDemonsTotal.set(Integer.valueOf(doc.getElementsByTagName("demons").item(0).getAttributes().item(0).getNodeValue()));
             }
             //OBSTACLES
             X = Double.valueOf(doc.getElementsByTagName("obstacles").item(0).getAttributes().item(0).getNodeValue());
             Y = Double.valueOf(doc.getElementsByTagName("obstacles").item(0).getAttributes().item(1).getNodeValue());
-            obstacles = new Obstacle((int)X,(int)Y);
+            /*obstacles = new Obstacle((int)X,(int)Y);
             for (int i = 0;i<doc.getElementsByTagName("obstacle").getLength();i++){
                 double x = Double.valueOf(doc.getElementsByTagName("obstacle").item(i).getAttributes().item(0).getNodeValue());
                 double y = Double.valueOf(doc.getElementsByTagName("obstacle").item(i).getAttributes().item(1).getNodeValue());
                 obstacles.add((int)y,(int)x);
                 gameScene.getChildren().add(obstacles.get(i));
-            }
+            }*/
             //BALLS
             balls = new ArrayList<>();
             nbrBallsTotal = Integer.valueOf(doc.getElementsByTagName("balls").item(0).getAttributes().item(1).getNodeValue());
@@ -595,7 +603,7 @@ public class PartieControler implements Initializable {
             doc.getElementsByTagName("pistolet").item(0).getAttributes()
                     .item(1).setTextContent(String.valueOf(pistolet.getY()));
             //OBSTACLES
-            doc.getElementsByTagName("obstacles").item(0).getAttributes()
+            /*doc.getElementsByTagName("obstacles").item(0).getAttributes()
                     .item(0).setTextContent(String.valueOf(obstacles.getPositionX()));
             doc.getElementsByTagName("obstacles").item(0).getAttributes()
                     .item(1).setTextContent(String.valueOf(obstacles.getPositionY()));
@@ -604,7 +612,7 @@ public class PartieControler implements Initializable {
                 ob.setAttribute("x", String.valueOf(obstacle.getX()));
                 ob.setAttribute("y", String.valueOf(obstacle.getY()));
                 doc.getElementsByTagName("obstacles").item(0).appendChild(ob);
-            }
+            }*/
             //DEMONS
             doc.getElementsByTagName("demons").item(0).getAttributes()
                     .item(0).setTextContent(String.valueOf(demons.size()));
@@ -672,65 +680,121 @@ public class PartieControler implements Initializable {
         }
     }
 
-    private void initialisationDemons(){
-        //INITIALISATION DE LA LISTE DES DEMONS------------------------------------------------------------------
-        for (int i=0;i<nbrDemonsTotal;i++){
-            int k = i;
-
-            //LORSQUE UN DEMON TOUCHE LE PISTOLET, LE PISTOLET S'EXPLOSE
-            demons.get(k).isMovingProperty.addListener((observable, oldValue, newValue) -> {
-                if (demons.get(k).intersects(pistolet)) {
-                    if (!pistolet.deadProperty.get()){
-                        demons.get(k).stop();
+    private void demonIntersection(int k){
+        //LORSQUE UN DEMON TOUCHE LE PISTOLET, LE PISTOLET S'EXPLOSE
+        demons.get(k).isMovingProperty.addListener((observable, oldValue, newValue) -> {
+            if (demons.get(k).intersects(pistolet)) {
+                if (!pistolet.deadProperty.get()){
+                    demons.get(k).stop();
+                    pistolet.tuer();
+                }
+            }
+        });
+        //LORSQUE UN DEMON EST TUEE, INCREMENTER LE NBR DE DEMONS MORTS
+        demons.get(k).isDeadProperty.addListener((observable, oldValue, newValue) -> {
+            if (newValue) {
+                nbrDemonsMorts.set(nbrDemonsMorts.get() + 1);
+                demons.get(k).yProperty().set(-500);
+                gameScene.getChildren().remove(demons.get(k));
+                gameScene.getChildren().remove(demons.get(k).getVie().getHealthBar());
+            }
+        });
+        //LORSQUE LE PISTOLET TOUCHE UN DEMON, LE PISTOLET S'EXPLOSE
+        pistolet.xProperty().addListener((observable, oldValue, newValue) -> {
+            if (pistolet.intersects(demons.get(k).getBoundsInParent())) {
+                if (!pistolet.deadProperty.get()) {
+                    if (!demons.get(k).isExplosingProperty.get()){
                         pistolet.tuer();
+                        demons.get(k).stop();
                     }
                 }
-            });
-            //LORSQUE UN DEMON EST TUEE, INCREMENTER LE NBR DE DEMONS MORTS
-            demons.get(k).isDeadProperty.addListener((observable, oldValue, newValue) -> {
-                if (newValue) {
-                    nbrDemonsMorts.set(nbrDemonsMorts.get() + 1);
-                    demons.get(k).yProperty().set(-500);
-                    gameScene.getChildren().remove(demons.get(k));
-                    gameScene.getChildren().remove(demons.get(k).getVie().getHealthBar());
+            }
+        });
+        //LORSQUE LE PISTOLET TOUCHE UN DEMON, LE PISTOLET S'EXPLOSE
+        pistolet.yProperty().addListener((observable, oldValue, newValue) -> {
+            if (pistolet.intersects(demons.get(k).getBoundsInParent())) {
+                if (!pistolet.deadProperty.get()) {
+                    if (!demons.get(k).isExplosingProperty.get()){
+                        pistolet.tuer();
+                        demons.get(k).stop();
+                    }
                 }
-            });
-            //LORSQUE LE PISTOLET TOUCHE UN DEMON, LE PISTOLET S'EXPLOSE
-            pistolet.xProperty().addListener((observable, oldValue, newValue) -> {
-                if (pistolet.intersects(demons.get(k).getBoundsInParent())) {
-                    if (!pistolet.deadProperty.get()) {
-                        if (!demons.get(k).isExplosingProperty.get()){
-                            pistolet.tuer();
-                            demons.get(k).stop();
+            }
+        });
+        //LORSQUE UN DEMON TOUCHE UN AUTRE DEMON
+        for(int j=0;j<demons.size();j++){
+            int n = j;
+            if (k!=j){
+                demons.get(k).xProperty().addListener((observable, oldValue, newValue) -> {
+                    if (demons.get(k).getY()>0 && demons.get(n).getY()>0) {
+                        if (demons.get(k).intersects(demons.get(n))) {
+                            if (demons.get(k).isMale() && demons.get(n).isMale()) {
+                                if (!demons.get(k).isExplosingProperty.get()) {
+                                    if (!demonsCollisions.exists(k, n)) {
+                                        demonsCollisions.add(k, n);
+                                        demonsCollisions.destroyOneDemon(demons);
+                                    }
+                                }
+                            } else if ((demons.get(k).isMale() && !demons.get(n).isMale()) || (demons.get(n).isMale() && !demons.get(k).isMale())) {
+                                if (!demons.get(k).isExplosingProperty.get()) {
+                                    if (!demonsCollisions.exists(k, n)) {
+                                        demonsCollisions.add(k, n);
+                                        int x = ((int) demons.get(k).getX() + (int) demons.get(n).getX()) / 2;
+                                        int y = ((int) demons.get(k).getY() + (int) demons.get(n).getY()) / 2;
+                                        demons.get(k).resetPosition();
+                                        demons.get(n).resetPosition();
+
+
+                                        if (Main.randomInt(0, 1) == 1) {
+                                            demons.add(new Demon(x, y, true, 100));
+                                        } else {
+                                            demons.add(new Demon(x, y, false, 100));
+                                        }
+                                        nbrDemonsTotal.set(nbrDemonsTotal.get() + 1);
+                                        gameScene.getChildren().add(demons.get(demons.size() - 1));
+                                        gameScene.getChildren().add(demons.get(demons.size() - 1).getVie().getHealthBar());
+                                        demonIntersection(demons.size() - 1);
+                                        demons.get(demons.size() - 1).start();
+                                        demonsCollisions.remove(k, n);
+                                    }
+                                }
+                            }
                         }
                     }
-                }
-            });
-            //LORSQUE LE PISTOLET TOUCHE UN DEMON, LE PISTOLET S'EXPLOSE
-            pistolet.yProperty().addListener((observable, oldValue, newValue) -> {
-                if (pistolet.intersects(demons.get(k).getBoundsInParent())) {
-                    if (!pistolet.deadProperty.get()) {
-                        if (!demons.get(k).isExplosingProperty.get()){
-                            pistolet.tuer();
-                            demons.get(k).stop();
-                        }
-                    }
-                }
-            });
+                });
+            }
+        }
             /*for (int j = 0;j<obstacles.size();j++){
                 int s = j;
                 //LORSQUE UN DEMON TOUCHE UN OBSTACLE IL CHANGE LA DIRECTION
-                demons.get(k).isMovingProperty.addListener(new ChangeListener<Boolean>() {
+                demons.get(k).yProperty().addListener(new ChangeListener<Number>() {
                     @Override
-                    public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-                        if (demons.get(k).getBoundsInParent().intersects(obstacles.get(s).getBoundsInParent())) {
-                            demons.get(k).changeYdirection();
+                    public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+                        if (demons.get(k).intersects(obstacles.get(s).getBoundsInParent())) {
+                            System.out.println("blocked");
+                            //demons.get(k).setSpeedY(0);
+                        }else {
+                            System.out.println("free");
+                            *//*if (demons.get(k).isMovingDown && demons.get(k).getSpeedY() == 0){
+                                demons.get(k).setSpeedY(Main.randomDouble(0.8,1));
+                            }*//*
                         }
-
+                    }
+                });
+                demons.get(k).xProperty().addListener(new ChangeListener<Number>() {
+                    @Override
+                    public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+                        *//*if (demons.get(k).intersects(obstacles.get(s).getBoundsInParent())) {
+                            System.out.println("blocked");
+                            demons.get(k).setSpeedY(0);
+                        }else {
+                            if (demons.get(k).isMovingDown && demons.get(k).getSpeedY() == 0){
+                                demons.get(k).setSpeedY(Main.randomDouble(0.8,1));
+                            }
+                        }*//*
                     }
                 });
             }*/
-        }
         //-------------------------------------------------------------------------------------------------------
     }
 

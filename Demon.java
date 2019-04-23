@@ -1,9 +1,6 @@
 package sample;
 
-import javafx.animation.AnimationTimer;
-import javafx.animation.KeyFrame;
-import javafx.animation.KeyValue;
-import javafx.animation.Timeline;
+import javafx.animation.*;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -15,6 +12,8 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.Region;
 import javafx.util.Duration;
 
+import static javafx.util.Duration.millis;
+
 
 public class Demon extends ImageView{
     private boolean male;
@@ -23,17 +22,19 @@ public class Demon extends ImageView{
     private AnimationTimer mouvment;
     private HealthBar vie;
     private Timeline explosionAnimation;
+    private ImageView image;
 
     public BooleanProperty isExplosingProperty;
     public BooleanProperty isDeadProperty;
     public BooleanProperty isMovingProperty;
+    //public boolean isMovingDown;
 
     public Demon(int x, int y,boolean masculin,double health){
         this.setX(x);
         this.setY(y);
         this.speedX = randomSpeed();
         this.speedY = randomSpeed();
-        ImageView image = this;
+        image = this;
         male = masculin;
         isMovingProperty = new SimpleBooleanProperty(false);
         if (masculin){
@@ -56,7 +57,7 @@ public class Demon extends ImageView{
                 image.setImage(Data.getData().explosionIMG());
         });
         KeyFrame debutExplosion = new KeyFrame(Duration.ZERO,new KeyValue(this.isExplosingProperty,true));
-        KeyFrame finExplosion = new KeyFrame(Duration.millis(600),
+        KeyFrame finExplosion = new KeyFrame(millis(600),
                 new KeyValue(this.isExplosingProperty,false),
                 new KeyValue(this.isDeadProperty,true));
         explosionAnimation = new Timeline();
@@ -102,12 +103,12 @@ public class Demon extends ImageView{
 
     private void playEffect(){
         KeyFrame begin = new KeyFrame(Duration.ZERO,new KeyValue(effectProperty(), new Bloom()));
-        KeyFrame end = new KeyFrame(Duration.millis(30),new KeyValue(effectProperty(),null));
+        KeyFrame end = new KeyFrame(millis(30),new KeyValue(effectProperty(),null));
         Timeline timeline = new Timeline();
         timeline.getKeyFrames().addAll(begin,end);
         timeline.play();
     }
-    void move() {
+    synchronized void move() {
         isMovingProperty.set(true);
         /* deplacer le centre de la particule */
         this.setX(this.getX() + speedX * GameConfig.getInstance().getDemonsSpeed());
@@ -123,10 +124,10 @@ public class Demon extends ImageView{
         if (this.getY() < 0 && speedY < 0) {
             speedY *= -1;
         }
-        if (this.getX() > ((Region) getParent()).getWidth()-this.getFitWidth() && speedX > 0) {
+        if (this.getX() > ((Region) this.getParent()).getWidth()-this.getFitWidth() && speedX > 0) {
             speedX *= -1;
         }
-        if (this.getY() > ((Region) getParent()).getHeight()-this.getFitHeight() && speedY > 0) {
+        if (this.getY() > ((Region) this.getParent()).getHeight()-this.getFitHeight() && speedY > 0) {
             speedY *= -1;
         }
     }
@@ -165,8 +166,10 @@ public class Demon extends ImageView{
         double num1 = Main.randomDouble(0.8,1);
         double num2 = Main.randomDouble(-1,-0.8);
         if (Main.randomInt(0,1)==0){
+            //isMovingDown = true;
             return num1;
         }else {
+            //isMovingDown = false;
             return num2;
         }
     }
@@ -188,9 +191,13 @@ public class Demon extends ImageView{
     }
 
     public void changeXdirection(){
-        speedX *= -1;
+        this.speedX *= -1;
     }
     public void changeYdirection(){
-        speedY *= -1;
+        this.speedY *= -1;
+    }
+    public void resetPosition(){
+        stop();
+        setY(-200);
     }
 }

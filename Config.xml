@@ -8,7 +8,7 @@
         <pause>Esc</pause>
     </keys>
     <speed>
-        <demons>0.9688095238095239</demons>
+        <demons>2.0</demons>
         <pistol>7.952380952380952</pistol>
     </speed>
 </config>
