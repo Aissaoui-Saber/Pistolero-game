@@ -70,7 +70,9 @@ public class Demon extends ImageView{
                 if (image.getY()<0){
                     moveDown();
                 }else{
-                    move();
+                    if (image!=null){
+                        move();
+                    }
                 }
 
             }
@@ -124,11 +126,13 @@ public class Demon extends ImageView{
         if (this.getY() < 0 && speedY < 0) {
             speedY *= -1;
         }
-        if (this.getX() > ((Region) this.getParent()).getWidth()-this.getFitWidth() && speedX > 0) {
-            speedX *= -1;
-        }
-        if (this.getY() > ((Region) this.getParent()).getHeight()-this.getFitHeight() && speedY > 0) {
-            speedY *= -1;
+        if (this.getParent() != null) {
+            if (this.getX() > ((Region) this.getParent()).getWidth() - this.getFitWidth() && speedX > 0) {
+                speedX *= -1;
+            }
+            if (this.getY() > ((Region) this.getParent()).getHeight() - this.getFitHeight() && speedY > 0) {
+                speedY *= -1;
+            }
         }
     }
     private void moveDown(){

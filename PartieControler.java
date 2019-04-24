@@ -284,16 +284,26 @@ public class PartieControler implements Initializable {
         };
     }
     public void nouvellePartie(int nBall,int nDemons,boolean load){
-        if (pistolet != null && balls != null && demons != null && obstacles != null && demonsCollisions != null){
+        if (pistolet != null){
             pistolet = null;
+        }
+        if (balls != null){
             balls.clear();
             balls = null;
+        }
+        if (demons != null){
             demons.clear();
             demons = null;
+        }
+        if (obstacles != null){
             obstacles.clear();
             obstacles = null;
+        }
+        if (demonsCollisions != null){
             demonsCollisions.clear();
             demonsCollisions = null;
+        }
+        if  (gameScene != null){
             gameScene.getChildren().clear();
             gameScene.getChildren().add(backIMG);
             gameScene.getChildren().add(hbox);
@@ -551,10 +561,11 @@ public class PartieControler implements Initializable {
                 }else {
                     demons.get(i).isDeadProperty.set(false);
                 }
+                demonIntersection(i);
                 gameScene.getChildren().add(demons.get(i));
                 gameScene.getChildren().add(demons.get(i).getVie().getHealthBar());
                 nbrDemonsMorts = new SimpleIntegerProperty(Integer.valueOf(doc.getElementsByTagName("demons").item(0).getAttributes().item(1).getNodeValue()));
-                nbrDemonsTotal.set(Integer.valueOf(doc.getElementsByTagName("demons").item(0).getAttributes().item(0).getNodeValue()));
+                nbrDemonsTotal = new SimpleIntegerProperty(Integer.valueOf(doc.getElementsByTagName("demons").item(0).getAttributes().item(0).getNodeValue()));
             }
             //OBSTACLES
             X = Double.valueOf(doc.getElementsByTagName("obstacles").item(0).getAttributes().item(0).getNodeValue());
@@ -736,7 +747,7 @@ public class PartieControler implements Initializable {
                                     }
                                 }
                             } else if ((demons.get(k).isMale() && !demons.get(n).isMale()) || (demons.get(n).isMale() && !demons.get(k).isMale())) {
-                                if (!demons.get(k).isExplosingProperty.get()) {
+                                if (!demons.get(k).isExplosingProperty.get() && !demons.get(n).isExplosingProperty.get()) {
                                     if (!demonsCollisions.exists(k, n)) {
                                         demonsCollisions.add(k, n);
                                         int x = ((int) demons.get(k).getX() + (int) demons.get(n).getX()) / 2;
