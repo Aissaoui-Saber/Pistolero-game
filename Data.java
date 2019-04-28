@@ -23,6 +23,7 @@ public class Data {
     private static Image boxIMG;
     private static Dimension2D demonMale1Dimension;
     private static Dimension2D demonFemale1Dimension;
+    private static Dimension2D boxDimension;
 
     private static AudioClip ballShootSFX;
     private static AudioClip explosionSFX;
@@ -46,6 +47,7 @@ public class Data {
         boxIMG = new Image(this.getClass().getResource("Images/box.jpg").toExternalForm());
         demonMale1Dimension = new Dimension2D(100,71);
         demonFemale1Dimension = new Dimension2D(48,72);
+        boxDimension = new Dimension2D(30,30);
 
         ballShootSFX = new AudioClip(this.getClass().getResource("Sounds/ballShoot.mp3").toString());
         explosionSFX = new AudioClip(this.getClass().getResource("Sounds/explosion.mp3").toString());
@@ -99,6 +101,8 @@ public class Data {
     public int demonMale1Width(){return (int)demonMale1Dimension.getWidth();}
     public int demonFemale1Height(){return (int)demonFemale1Dimension.getHeight();}
     public int demonFemale1Width(){return (int)demonFemale1Dimension.getWidth();}
+    public int boxWidth(){return (int)boxDimension.getWidth();}
+    public int boxHeight(){return (int)boxDimension.getHeight();}
 
     public void ballShootSFX() {
         ballShootSFX.play();

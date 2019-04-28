@@ -23,6 +23,7 @@ public class Demon extends ImageView{
     private HealthBar vie;
     private Timeline explosionAnimation;
     private ImageView image;
+    public int obstacleColisionIndex = -1;
 
     public BooleanProperty isExplosingProperty;
     public BooleanProperty isDeadProperty;
@@ -122,16 +123,20 @@ public class Demon extends ImageView{
 
         if (this.getX() < 0 && speedX < 0) {
             speedX *= -1;
+            obstacleColisionIndex = -1;
         }
         if (this.getY() < 0 && speedY < 0) {
             speedY *= -1;
+            obstacleColisionIndex = -1;
         }
         if (this.getParent() != null) {
             if (this.getX() > ((Region) this.getParent()).getWidth() - this.getFitWidth() && speedX > 0) {
                 speedX *= -1;
+                obstacleColisionIndex = -1;
             }
             if (this.getY() > ((Region) this.getParent()).getHeight() - this.getFitHeight() && speedY > 0) {
                 speedY *= -1;
+                obstacleColisionIndex = -1;
             }
         }
     }
@@ -170,20 +175,18 @@ public class Demon extends ImageView{
         double num1 = Main.randomDouble(0.8,1);
         double num2 = Main.randomDouble(-1,-0.8);
         if (Main.randomInt(0,1)==0){
-            //isMovingDown = true;
             return num1;
         }else {
-            //isMovingDown = false;
             return num2;
         }
     }
 
-    public void setSpeedX(double speedX) {
-        this.speedX = speedX;
+    public void setRandomSpeedX() {
+        this.speedX = randomSpeed();
     }
 
-    public void setSpeedY(double speedY) {
-        this.speedY = speedY;
+    public void setRandomSpeedY() {
+        this.speedY = randomSpeed();
     }
 
     public double getSpeedX() {

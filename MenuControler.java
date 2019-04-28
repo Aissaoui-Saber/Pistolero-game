@@ -56,7 +56,7 @@ public class MenuControler implements Initializable {
                         if (Main.rootControler.partieControler.partieFini != null){
                             if (Main.rootControler.partieControler.partieEnPause.get()){
                                 if (!Main.rootControler.partieControler.partieFini.get()){
-                                    Main.rootControler.partieControler.sauvgarderPartie();
+                                    //Main.rootControler.partieControler.sauvgarderPartie();
                                 }
                             }
                         }

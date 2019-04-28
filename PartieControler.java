@@ -11,6 +11,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
@@ -267,6 +268,7 @@ public class PartieControler implements Initializable {
         });
         //-------------------------------------------------------------------------------------------------------
         demonGenerator = () -> {
+            int f = 0;
             while (!partieEnPause.get() && !partieFini.get()) {
                 if (demonsIterator == nbrDemonsTotal.get()){
                     demonsIterator = 0;
@@ -275,9 +277,19 @@ public class PartieControler implements Initializable {
                     demons.get(demonsIterator).start();
                     try {
                         Thread.sleep(2000);
+                        f++;
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
+                }
+                if (f == 5){
+                    for (int i=0;i<nbrDemonsTotal.get();i++){
+                        if (demons.get(i).getY()>0){
+                            demons.get(i).setRandomSpeedX();
+                            demons.get(i).setRandomSpeedY();
+                        }
+                    }
+                    f = 0;
                 }
                 demonsIterator++;
             }
@@ -310,17 +322,17 @@ public class PartieControler implements Initializable {
             System.gc();
         }
         if (load){
-            chargerPartie();
+            //chargerPartie();
             reprendre();
         }else{
             pistolet = new Pistol(600,600);
             balls = new ArrayList<>();
             demons = new ArrayList<>();
-            /*obstacles = new Obstacle(0,200);
+            obstacles = new Obstacle(0,200);
             obstacles.randomBoxes();
-            for (ImageView obstacle : obstacles) {
+            for (Pane obstacle : obstacles) {
                 gameScene.getChildren().add(obstacle);
-            }*/
+            }
             nbrBallsTotal = nBall;
             nbrDemonsTotal = new SimpleIntegerProperty(nDemons);
             demonsIterator = 0;
@@ -361,8 +373,6 @@ public class PartieControler implements Initializable {
             gameScene.requestFocus();
         });
         //--------------------------------------------------------------------------------------------------------
-
-
 
 
 
@@ -497,11 +507,11 @@ public class PartieControler implements Initializable {
                 });
             }
         });
-        /*Thread t2 = new Thread(() -> {
+        Thread t2 = new Thread(() -> {
             for(int i=0;i<obstacles.size();i++){
                 int k = i;
                 b.yProperty().addListener((observable, oldValue, newValue) -> {
-                    if (b.getBoundsInParent().intersects(obstacles.get(k).getBoundsInLocal())) {
+                    if (b.getBoundsInParent().intersects(obstacles.get(k).getBoundsInParent())) {
                         if (!b.blocked.get()) {
                             b.blocked.set(true);
                             b.stop();
@@ -509,9 +519,9 @@ public class PartieControler implements Initializable {
                     }
                 });
             }
-        });*/
+        });
         t1.start();
-        //t2.start();
+        t2.start();
         balls.add(b);
         gameScene.getChildren().add(b);
         b.start();
@@ -533,7 +543,7 @@ public class PartieControler implements Initializable {
 
 
 
-    public void chargerPartie(){
+    /*public void chargerPartie(){
         try {
             File fXmlFile = new File(GameConfig.gameSaveFilePath);
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
@@ -544,6 +554,16 @@ public class PartieControler implements Initializable {
             double X = Double.valueOf(doc.getElementsByTagName("pistolet").item(0).getAttributes().item(0).getNodeValue());
             double Y = Double.valueOf(doc.getElementsByTagName("pistolet").item(0).getAttributes().item(1).getNodeValue());
             pistolet = new Pistol((int)X,(int)Y);
+            //OBSTACLES
+            X = Double.valueOf(doc.getElementsByTagName("obstacles").item(0).getAttributes().item(0).getNodeValue());
+            Y = Double.valueOf(doc.getElementsByTagName("obstacles").item(0).getAttributes().item(1).getNodeValue());
+            obstacles = new Obstacle((int)X,(int)Y);
+            for (int i = 0;i<doc.getElementsByTagName("obstacle").getLength();i++){
+                double x = Double.valueOf(doc.getElementsByTagName("obstacle").item(i).getAttributes().item(0).getNodeValue());
+                double y = Double.valueOf(doc.getElementsByTagName("obstacle").item(i).getAttributes().item(1).getNodeValue());
+                obstacles.add((int)y,(int)x);
+                gameScene.getChildren().add(obstacles.get(i));
+            }
             //DEMONS
             demons = new ArrayList<>();
             for (int i = 0;i<doc.getElementsByTagName("demon").getLength();i++){
@@ -567,16 +587,6 @@ public class PartieControler implements Initializable {
                 nbrDemonsMorts = new SimpleIntegerProperty(Integer.valueOf(doc.getElementsByTagName("demons").item(0).getAttributes().item(1).getNodeValue()));
                 nbrDemonsTotal = new SimpleIntegerProperty(Integer.valueOf(doc.getElementsByTagName("demons").item(0).getAttributes().item(0).getNodeValue()));
             }
-            //OBSTACLES
-            X = Double.valueOf(doc.getElementsByTagName("obstacles").item(0).getAttributes().item(0).getNodeValue());
-            Y = Double.valueOf(doc.getElementsByTagName("obstacles").item(0).getAttributes().item(1).getNodeValue());
-            /*obstacles = new Obstacle((int)X,(int)Y);
-            for (int i = 0;i<doc.getElementsByTagName("obstacle").getLength();i++){
-                double x = Double.valueOf(doc.getElementsByTagName("obstacle").item(i).getAttributes().item(0).getNodeValue());
-                double y = Double.valueOf(doc.getElementsByTagName("obstacle").item(i).getAttributes().item(1).getNodeValue());
-                obstacles.add((int)y,(int)x);
-                gameScene.getChildren().add(obstacles.get(i));
-            }*/
             //BALLS
             balls = new ArrayList<>();
             nbrBallsTotal = Integer.valueOf(doc.getElementsByTagName("balls").item(0).getAttributes().item(1).getNodeValue());
@@ -589,10 +599,10 @@ public class PartieControler implements Initializable {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
+    }*/
 
 
-    public void sauvgarderPartie(){
+    /*public void sauvgarderPartie(){
         try {
             DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
@@ -614,7 +624,7 @@ public class PartieControler implements Initializable {
             doc.getElementsByTagName("pistolet").item(0).getAttributes()
                     .item(1).setTextContent(String.valueOf(pistolet.getY()));
             //OBSTACLES
-            /*doc.getElementsByTagName("obstacles").item(0).getAttributes()
+            doc.getElementsByTagName("obstacles").item(0).getAttributes()
                     .item(0).setTextContent(String.valueOf(obstacles.getPositionX()));
             doc.getElementsByTagName("obstacles").item(0).getAttributes()
                     .item(1).setTextContent(String.valueOf(obstacles.getPositionY()));
@@ -623,7 +633,7 @@ public class PartieControler implements Initializable {
                 ob.setAttribute("x", String.valueOf(obstacle.getX()));
                 ob.setAttribute("y", String.valueOf(obstacle.getY()));
                 doc.getElementsByTagName("obstacles").item(0).appendChild(ob);
-            }*/
+            }
             //DEMONS
             doc.getElementsByTagName("demons").item(0).getAttributes()
                     .item(0).setTextContent(String.valueOf(demons.size()));
@@ -667,7 +677,7 @@ public class PartieControler implements Initializable {
         }catch (Exception e){
             e.printStackTrace();
         }
-    }
+    }*/
 
 
     public void reprendre(){
@@ -775,37 +785,41 @@ public class PartieControler implements Initializable {
                 });
             }
         }
-            /*for (int j = 0;j<obstacles.size();j++){
+            for (int j = 0;j<obstacles.size();j++){
                 int s = j;
                 //LORSQUE UN DEMON TOUCHE UN OBSTACLE IL CHANGE LA DIRECTION
                 demons.get(k).yProperty().addListener(new ChangeListener<Number>() {
                     @Override
                     public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
                         if (demons.get(k).intersects(obstacles.get(s).getBoundsInParent())) {
-                            System.out.println("blocked");
-                            //demons.get(k).setSpeedY(0);
-                        }else {
-                            System.out.println("free");
-                            *//*if (demons.get(k).isMovingDown && demons.get(k).getSpeedY() == 0){
-                                demons.get(k).setSpeedY(Main.randomDouble(0.8,1));
-                            }*//*
+                            if (demons.get(k).obstacleColisionIndex != s) {
+                                demons.get(k).obstacleColisionIndex = s;
+                                obstacles.playEffect(s);
+                                if ((obstacles.get(s).getLayoutY() > demons.get(k).getY())) {//COLLISION AU DESSUS
+                                    if (Math.abs(demons.get(k).getFitHeight() - (obstacles.get(s).getLayoutY() - demons.get(k).getY())) <= 4) {
+                                        demons.get(k).changeYdirection();
+                                    }
+                                }
+                                if ((obstacles.get(s).getLayoutY() + obstacles.get(s).getHeight()) - demons.get(k).getY() <= 3) {//COLLISION AU DESSOUS
+                                    if (obstacles.get(s).getHeight() - (demons.get(k).getY() - obstacles.get(s).getLayoutY()) <= 3) {
+                                        demons.get(k).changeYdirection();
+                                    }
+                                }
+                                if (obstacles.get(s).getLayoutX() > demons.get(k).getX()) {//COLLISION A GAUCHE
+                                    if (Math.abs(demons.get(k).getFitWidth() - (obstacles.get(s).getLayoutX() - demons.get(k).getX())) <= 4) {
+                                        demons.get(k).changeXdirection();
+                                    }
+                                }
+                                if ((obstacles.get(s).getLayoutX() + obstacles.get(s).getWidth()) - demons.get(k).getX() <= 3) {//COLLISION A DROITE
+                                    if (obstacles.get(s).getWidth() - (demons.get(k).getX() - obstacles.get(s).getLayoutX()) <= 3) {
+                                        demons.get(k).changeXdirection();
+                                    }
+                                }
+                            }
                         }
                     }
                 });
-                demons.get(k).xProperty().addListener(new ChangeListener<Number>() {
-                    @Override
-                    public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-                        *//*if (demons.get(k).intersects(obstacles.get(s).getBoundsInParent())) {
-                            System.out.println("blocked");
-                            demons.get(k).setSpeedY(0);
-                        }else {
-                            if (demons.get(k).isMovingDown && demons.get(k).getSpeedY() == 0){
-                                demons.get(k).setSpeedY(Main.randomDouble(0.8,1));
-                            }
-                        }*//*
-                    }
-                });
-            }*/
+            }
         //-------------------------------------------------------------------------------------------------------
     }
 
