@@ -23,12 +23,11 @@ public class Demon extends ImageView{
     private HealthBar vie;
     private Timeline explosionAnimation;
     private ImageView image;
+    public BooleanProperty changingDirection;
     public int obstacleColisionIndex = -1;
 
     public BooleanProperty isExplosingProperty;
     public BooleanProperty isDeadProperty;
-    public BooleanProperty isMovingProperty;
-    //public boolean isMovingDown;
 
     public Demon(int x, int y,boolean masculin,double health){
         this.setX(x);
@@ -36,8 +35,8 @@ public class Demon extends ImageView{
         this.speedX = randomSpeed();
         this.speedY = randomSpeed();
         image = this;
+        changingDirection = new SimpleBooleanProperty(false);
         male = masculin;
-        isMovingProperty = new SimpleBooleanProperty(false);
         if (masculin){
             this.setImage(Data.getData().demonMale1IMG());
             this.setFitWidth(Data.getData().demonMale1Width());
@@ -112,11 +111,9 @@ public class Demon extends ImageView{
         timeline.play();
     }
     synchronized void move() {
-        isMovingProperty.set(true);
         /* deplacer le centre de la particule */
         this.setX(this.getX() + speedX * GameConfig.getInstance().getDemonsSpeed());
         this.setY(this.getY() + speedY * GameConfig.getInstance().getDemonsSpeed());
-        isMovingProperty.set(false);
 
         /* detecter les collision avec le bord
          * et si collision modifier le vecteur de la vitesse */
@@ -199,9 +196,35 @@ public class Demon extends ImageView{
 
     public void changeXdirection(){
         this.speedX *= -1;
+        Thread t = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                changingDirection.set(true);
+                try {
+                    Thread.sleep(20);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                changingDirection.set(false);
+            }
+        });
+        t.start();
     }
     public void changeYdirection(){
         this.speedY *= -1;
+        Thread t = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                changingDirection.set(true);
+                try {
+                    Thread.sleep(20);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                changingDirection.set(false);
+            }
+        });
+        t.start();
     }
     public void resetPosition(){
         stop();

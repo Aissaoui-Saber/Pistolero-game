@@ -19,8 +19,8 @@ public class Ball extends ImageView{
         this.setImage(Data.getData().bulletIMG());
         this.setX(x);
         this.setY(y);
-        this.setFitWidth(10);
-        this.setFitHeight(20);
+        this.setFitWidth(8);
+        this.setFitHeight(16);
         blocked = new SimpleBooleanProperty(false);
         mouvment = new AnimationTimer() {
             @Override

@@ -39,8 +39,8 @@ public class Pistol extends ImageView{
         //INITIALISATION DE PISTOLET------------------------------------------------------------------------------
         this.setFocusTraversable(true);
         this.setImage(Data.getData().pistolVerticalIMG());
-        this.setFitWidth(70);
-        this.setFitHeight(79);
+        this.setFitWidth(50);
+        this.setFitHeight(56);
         this.setX(x);
         this.setY(y);
         pistol = this;
@@ -70,7 +70,7 @@ public class Pistol extends ImageView{
         ballOutXProperty = new SimpleIntegerProperty();
         ballOutYProperty = new SimpleIntegerProperty();
 
-        ballOutXProperty.bind(Bindings.add(this.xProperty(),30));
+        ballOutXProperty.bind(Bindings.add(this.xProperty(),21));
         ballOutYProperty.bind(this.yProperty());
         //-------------------------------------------------------------------------------------------------------
 
@@ -118,13 +118,13 @@ public class Pistol extends ImageView{
     }
     private void moveRight(){
         if (!isExplosingProperty.get()) {
-            if (this.getX() + GameConfig.getInstance().getPistolSpeed() < 1210)
+            if (this.getX() + GameConfig.getInstance().getPistolSpeed() < 1240)
                 this.setX(this.getX() + GameConfig.getInstance().getPistolSpeed());
         }
     }
     private void moveDown() {
         if (!isExplosingProperty.get()) {
-            if (this.getY() + GameConfig.getInstance().getPistolSpeed() < 640)
+            if (this.getY() + GameConfig.getInstance().getPistolSpeed() < 680)
                 this.setY(this.getY() + GameConfig.getInstance().getPistolSpeed());
         }
     }

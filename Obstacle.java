@@ -16,18 +16,19 @@ import static javafx.util.Duration.millis;
 
 
 public class Obstacle extends ArrayList<Pane> {
-    private int positionX,positionY;
-    public Obstacle(int x,int y){
-        positionX = x;
-        positionY = y;
-    }
-    public void addVerticalBoxes(int nbr){
-        this.add(new verticalObstacle(nbr));
-    }
-    public void addHorizontalBoxes(int nbr){
-        this.add(new horizontalObstacle(nbr));
+    public Obstacle(){
     }
 
+    public void addVerticalBoxes(int nbr,int x,int y){
+        this.add(new verticalObstacle(nbr));
+        this.get(size()-1).setLayoutX(x);
+        this.get(size()-1).setLayoutY(y);
+    }
+    public void addHorizontalBoxes(int nbr,int x,int y){
+        this.add(new horizontalObstacle(nbr));
+        this.get(size()-1).setLayoutX(x);
+        this.get(size()-1).setLayoutY(y);
+    }
     /*public void addBox(int ligne,int colonne){
         this.add(new ImageView(Data.getData().boxIMG()));
         this.get(this.size()-1).setFitWidth(boxWidth);
@@ -43,45 +44,28 @@ public class Obstacle extends ArrayList<Pane> {
         this.get(this.size()-1).setX(y);
     }*/
     public void randomBoxes(){
-        /*boolean transparent;
-        int nbr;
-        transparent = Main.randomInt(0, 1) == 1;
-        for (int i=0;i<7;i++){
-            nbr = 0;
-            if ((i%6) == 0) {
-                for (int j = 0; j < (1280 / Data.getData().boxWidth()); j++) {
-                    if (transparent) {
-                        if (nbr > 0) {
-                            nbr--;
-                        } else {
-                            this.add(new horizontalObstacle());
-                            ((horizontalObstacle)this.get(size()-1)).addBox();
-                            this.get(size()-1).setLayoutY(i*Data.getData().boxWidth()+positionY);
-                            this.get(size()-1).setLayoutX(j*Data.getData().boxWidth()+positionX);
-                            transparent = false;
-                            nbr = Main.randomInt(2, 4);
-                        }
-                    } else {
-                        if (nbr > 0) {
-                            ((horizontalObstacle)this.get(size()-1)).addBox();
-                            nbr--;
-                        } else {
-                            transparent = true;
-                            nbr = Main.randomInt(2, 4);
-                        }
-                    }
-                }
-            }
-        }*/
-        for (int i=0;i<20;i++){
+        int rand = Main.randomInt(4,8);
+        for (int i=0;i<rand;i++){
             if (i%2==0){
                 add(new horizontalObstacle(Main.randomInt(1,5)));
-                this.get(size()-1).setLayoutY(Main.randomInt(0,10)*Data.getData().boxWidth()+positionY);
-                this.get(size()-1).setLayoutX(Main.randomInt(0,50)*Data.getData().boxWidth()+positionX);
+                int y = Main.randomInt(0,10)*Data.getData().boxWidth();
+                int x = Main.randomInt(0,50)*Data.getData().boxWidth();
+                while (!isFreePlace(x,y)){
+                    x = Main.randomInt(0,50)*Data.getData().boxWidth();
+                    y = Main.randomInt(0,10)*Data.getData().boxWidth();
+                }
+                this.get(size()-1).setLayoutY(y);
+                this.get(size()-1).setLayoutX(x);
             }else{
                 add(new verticalObstacle(Main.randomInt(1,5)));
-                this.get(size()-1).setLayoutY(Main.randomInt(0,10)*Data.getData().boxWidth()+positionY);
-                this.get(size()-1).setLayoutX(Main.randomInt(0,50)*Data.getData().boxWidth()+positionX);
+                int y = Main.randomInt(0,10)*Data.getData().boxWidth();
+                int x = Main.randomInt(0,50)*Data.getData().boxWidth();
+                while (!isFreePlace(x,y)){
+                    x = Main.randomInt(0,50)*Data.getData().boxWidth();
+                    y = Main.randomInt(0,10)*Data.getData().boxWidth();
+                }
+                this.get(size()-1).setLayoutY(y);
+                this.get(size()-1).setLayoutX(x);
             }
         }
     }
@@ -92,23 +76,60 @@ public class Obstacle extends ArrayList<Pane> {
         timeline.getKeyFrames().addAll(begin,end);
         timeline.play();
     }
+    private boolean isFreePlace(double x,double y){
+        int i=0;
+        if (x<0 || x>1280 || y<200 || y>500){
+            return false;
+        }
+        while (i<size()-1){
+            if (x >= get(i).getLayoutX() && x <= (get(i).getLayoutX()+get(i).getWidth())){
+                if (y >= get(i).getLayoutY() && y <= (get(i).getLayoutY()+get(i).getHeight())){
+                    return false;
+                }else {
+                    if (x == get(i).getWidth()+get(i).getLayoutX()){
+                        if (y == get(i).getLayoutY()){
+                            return false;
+                        }else {
+                            return true;
+                        }
+                    }
+                    if (y == get(i).getHeight()+get(i).getLayoutY()){
+                        if (x == get(i).getLayoutX()){
+                            return false;
+                        }else {
+                            return true;
+                        }
+                    }
+                }
+            }
+            if (x+get(size()-1).getWidth() >= get(i).getLayoutX() && x+get(size()-1).getWidth() <= (get(i).getLayoutX()+get(i).getWidth())){
+                if (y >= get(i).getLayoutY() && y <= (get(i).getLayoutY()+get(i).getHeight())){
+                    return false;
+                }else {
+                    return true;
+                }
+            }
+            if (x >= get(i).getLayoutX() && x <= (get(i).getLayoutX()+get(i).getWidth())){
+                if (y+get(size()-1).getHeight() >= get(i).getLayoutY() && y+get(size()-1).getHeight() <= (get(i).getLayoutY()+get(i).getHeight())){
+                    return false;
+                }else {
+                    return true;
+                }
+            }
+            if (x+get(size()-1).getWidth() >= get(i).getLayoutX() && x+get(size()-1).getWidth() <= (get(i).getLayoutX()+get(i).getWidth())){
+                if (y+get(size()-1).getHeight() >= get(i).getLayoutY() && y+get(size()-1).getHeight() <= (get(i).getLayoutY()+get(i).getHeight())){
+                    return false;
+                }else {
+                    return true;
+                }
+            }
 
-    public int getPositionX() {
-        return positionX;
+            i++;
+        }
+        return true;
     }
 
-    public int getPositionY() {
-        return positionY;
-    }
-
-    public void setPositionX(int positionX) {
-        this.positionX = positionX;
-    }
-    public void setPositionY(int positionY) {
-        this.positionY = positionY;
-    }
-
-    private class verticalObstacle extends VBox{
+    public class verticalObstacle extends VBox{
         public verticalObstacle(){
             this.setWidth(Data.getData().boxWidth());
         }
@@ -131,8 +152,11 @@ public class Obstacle extends ArrayList<Pane> {
             getChildren().add(box);
             this.setHeight(this.getHeight()+Data.getData().boxHeight());
         }
+        public int getNbrOfBoxes(){
+            return this.getChildren().size();
+        }
     }
-    private class horizontalObstacle extends HBox{
+    public class horizontalObstacle extends HBox{
         public horizontalObstacle(){
             this.setHeight(Data.getData().boxHeight());
         }
@@ -154,6 +178,9 @@ public class Obstacle extends ArrayList<Pane> {
             box.setFitHeight(Data.getData().boxHeight());
             getChildren().add(box);
             this.setWidth(this.getWidth()+Data.getData().boxWidth());
+        }
+        public int getNbrOfBoxes(){
+            return this.getChildren().size();
         }
     }
 }

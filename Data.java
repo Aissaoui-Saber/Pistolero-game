@@ -45,8 +45,8 @@ public class Data {
         explosionIMG = new Image(this.getClass().getResource("Images/explosion.gif").toExternalForm());
         bravoIMG = new Image(this.getClass().getResource("Images/bravo.png").toExternalForm());
         boxIMG = new Image(this.getClass().getResource("Images/box.jpg").toExternalForm());
-        demonMale1Dimension = new Dimension2D(100,71);
-        demonFemale1Dimension = new Dimension2D(48,72);
+        demonMale1Dimension = new Dimension2D(70,50);
+        demonFemale1Dimension = new Dimension2D(40,60);
         boxDimension = new Dimension2D(30,30);
 
         ballShootSFX = new AudioClip(this.getClass().getResource("Sounds/ballShoot.mp3").toString());

@@ -2,6 +2,8 @@ package sample;
 
 import javafx.animation.ScaleTransition;
 import javafx.animation.Transition;
+import javafx.beans.binding.Bindings;
+import javafx.beans.binding.ObjectBinding;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -13,6 +15,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Group;
 import javafx.scene.Node;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
@@ -23,6 +26,7 @@ import javafx.util.Duration;
 import org.w3c.dom.*;
 import org.xml.sax.SAXException;
 
+import javax.naming.Binding;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -287,6 +291,7 @@ public class PartieControler implements Initializable {
                         if (demons.get(i).getY()>0){
                             demons.get(i).setRandomSpeedX();
                             demons.get(i).setRandomSpeedY();
+                            demons.get(i).obstacleColisionIndex = -1;
                         }
                     }
                     f = 0;
@@ -322,13 +327,13 @@ public class PartieControler implements Initializable {
             System.gc();
         }
         if (load){
-            //chargerPartie();
+            chargerPartie();
             reprendre();
         }else{
             pistolet = new Pistol(600,600);
             balls = new ArrayList<>();
             demons = new ArrayList<>();
-            obstacles = new Obstacle(0,200);
+            obstacles = new Obstacle();
             obstacles.randomBoxes();
             for (Pane obstacle : obstacles) {
                 gameScene.getChildren().add(obstacle);
@@ -366,6 +371,8 @@ public class PartieControler implements Initializable {
         bravoIMG.setX(452);
         bravoIMG.setY(172);
 
+
+
         //QUAND LE PISTOLET EST MORT, AFFICHER GAME OVER
         pistolet.deadProperty.addListener((observable, oldValue, newValue) -> {
             gameScene.getChildren().add(gameOverIMG);//AFFICHER GAME OVER
@@ -377,14 +384,11 @@ public class PartieControler implements Initializable {
 
 
         //NOMBRE DE BALLS LABEL-----------------------------------------------------------------------------------
-        if (nbrBallsProperty.get() != -1){
-            nbrBallLabel.setText(nbrBallsProperty.get()+" ");
-        }else {
+        /*if (nbrBallsProperty.get() == -1){
             nbrBallLabel.setText("∞ ");
-        }
-        nbrBallsProperty.addListener((observable, oldValue, newValue) -> nbrBallLabel.setText(newValue+" "));
+        }*/
+        nbrBallLabel.textProperty().bind(nbrBallsProperty.asString());
         //-------------------------------------------------------------------------------------------------------
-
 
 
 
@@ -433,7 +437,7 @@ public class PartieControler implements Initializable {
                 gameScene.getChildren().remove(pistolet);
             }
         });
-        gameScene.getChildren().add(node);
+
         //-------------------------------------------------------------------------------------------------------
 
 
@@ -441,49 +445,25 @@ public class PartieControler implements Initializable {
 
 
         //COLLISION DE PISTOLET AVEC LES OBSTACLES---------------------------------------------------------------
-        /*for (int i=0;i<obstacles.size();i++){
+        for (int i=0;i<obstacles.size();i++){
             int k = i;
             pistolet.xProperty().addListener((observable, oldValue, newValue) -> {
                 if (pistolet.intersects(obstacles.get(k).getBoundsInParent())){
-                    //pistolet.setX(oldValue.intValue());
-                    pistolet.blocked.set(true);
-                }else {
-                    pistolet.blocked.set(false);
+                    pistolet.setX(oldValue.intValue());
                 }
             });
             pistolet.yProperty().addListener((observable, oldValue, newValue) -> {
                 if (pistolet.intersects(obstacles.get(k).getBoundsInParent())){
                     if (pistolet.intersects(obstacles.get(k).getBoundsInParent())){
-                        //pistolet.setX(oldValue.intValue());
-                        pistolet.blocked.set(true);
-                    }else {
-                        pistolet.blocked.set(false);
+                        pistolet.setY(oldValue.intValue());
                     }
                 }
             });
         }
-        pistolet.blocked.addListener(new ChangeListener<Boolean>() {
-            @Override
-            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-                if (newValue){
-                    //pistolet.unblock();
-                }
-            }
-        });*/
         //-------------------------------------------------------------------------------------------------------
 
 
-
-
-
-
-
-
-        //PAUSE--------------------------------------------------------------------------------------------------
-
-        //-------------------------------------------------------------------------------------------------------
-
-
+        gameScene.getChildren().add(node);
     }
 
 
@@ -491,37 +471,32 @@ public class PartieControler implements Initializable {
 
     //INTERSECTION D'UNE BALLS AVEC LES DEMONS ET LES OBSTACLES--------------------------------------------------
     private void ballColusion(Ball b){
-        Thread t1 = new Thread(() -> {
-            for(int i=0;i<demons.size();i++){
-                int k = i;
-                b.yProperty().addListener((observable, oldValue, newValue) -> {
-                    if (!demons.get(k).isDeadProperty.get() && !demons.get(k).isExplosingProperty.get()) {
-                        if (b.getBoundsInParent().intersects(demons.get(k).getBoundsInLocal())) {
-                            if (!b.blocked.get()) {
-                                b.blocked.set(true);
-                                demons.get(k).blesser(b.getDegat());
-                                b.stop();
-                            }
-                        }
-                    }
-                });
-            }
-        });
-        Thread t2 = new Thread(() -> {
-            for(int i=0;i<obstacles.size();i++){
-                int k = i;
-                b.yProperty().addListener((observable, oldValue, newValue) -> {
-                    if (b.getBoundsInParent().intersects(obstacles.get(k).getBoundsInParent())) {
+        for(int i=0;i<demons.size();i++){
+            int k = i;
+            b.yProperty().addListener((observable, oldValue, newValue) -> {
+                if (!demons.get(k).isDeadProperty.get() && !demons.get(k).isExplosingProperty.get()) {
+                    if (b.getBoundsInParent().intersects(demons.get(k).getBoundsInLocal())) {
                         if (!b.blocked.get()) {
                             b.blocked.set(true);
+                            demons.get(k).blesser(b.getDegat());
                             b.stop();
                         }
                     }
-                });
-            }
-        });
-        t1.start();
-        t2.start();
+                }
+            });
+        }
+        for(int i=0;i<obstacles.size();i++){
+            int k = i;
+            b.yProperty().addListener((observable, oldValue, newValue) -> {
+                if (b.getBoundsInParent().intersects(obstacles.get(k).getBoundsInParent())) {
+                    if (!b.blocked.get()) {
+                        b.blocked.set(true);
+                        b.stop();
+                        obstacles.playEffect(k);
+                    }
+                }
+            });
+        }
         balls.add(b);
         gameScene.getChildren().add(b);
         b.start();
@@ -543,7 +518,7 @@ public class PartieControler implements Initializable {
 
 
 
-    /*public void chargerPartie(){
+    public void chargerPartie(){
         try {
             File fXmlFile = new File(GameConfig.gameSaveFilePath);
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
@@ -555,13 +530,17 @@ public class PartieControler implements Initializable {
             double Y = Double.valueOf(doc.getElementsByTagName("pistolet").item(0).getAttributes().item(1).getNodeValue());
             pistolet = new Pistol((int)X,(int)Y);
             //OBSTACLES
-            X = Double.valueOf(doc.getElementsByTagName("obstacles").item(0).getAttributes().item(0).getNodeValue());
-            Y = Double.valueOf(doc.getElementsByTagName("obstacles").item(0).getAttributes().item(1).getNodeValue());
-            obstacles = new Obstacle((int)X,(int)Y);
+            obstacles = new Obstacle();
             for (int i = 0;i<doc.getElementsByTagName("obstacle").getLength();i++){
-                double x = Double.valueOf(doc.getElementsByTagName("obstacle").item(i).getAttributes().item(0).getNodeValue());
-                double y = Double.valueOf(doc.getElementsByTagName("obstacle").item(i).getAttributes().item(1).getNodeValue());
-                obstacles.add((int)y,(int)x);
+                double x = Double.valueOf(doc.getElementsByTagName("obstacle").item(i).getAttributes().item(2).getNodeValue());
+                double y = Double.valueOf(doc.getElementsByTagName("obstacle").item(i).getAttributes().item(3).getNodeValue());
+                String orientation = doc.getElementsByTagName("obstacle").item(i).getAttributes().item(1).getNodeValue();
+                int nbrOfBoxes = Integer.valueOf(doc.getElementsByTagName("obstacle").item(i).getAttributes().item(0).getNodeValue());
+                if (orientation.equals("horizontal")){
+                    obstacles.addHorizontalBoxes(nbrOfBoxes,(int)x,(int)y);
+                }else {
+                    obstacles.addVerticalBoxes(nbrOfBoxes,(int)x,(int)y);
+                }
                 gameScene.getChildren().add(obstacles.get(i));
             }
             //DEMONS
@@ -599,10 +578,10 @@ public class PartieControler implements Initializable {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }*/
+    }
 
 
-    /*public void sauvgarderPartie(){
+    public void sauvgarderPartie(){
         try {
             DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
@@ -624,14 +603,18 @@ public class PartieControler implements Initializable {
             doc.getElementsByTagName("pistolet").item(0).getAttributes()
                     .item(1).setTextContent(String.valueOf(pistolet.getY()));
             //OBSTACLES
-            doc.getElementsByTagName("obstacles").item(0).getAttributes()
-                    .item(0).setTextContent(String.valueOf(obstacles.getPositionX()));
-            doc.getElementsByTagName("obstacles").item(0).getAttributes()
-                    .item(1).setTextContent(String.valueOf(obstacles.getPositionY()));
-            for (ImageView obstacle : obstacles) {
+            for (Pane obstacle : obstacles) {
                 Element ob = doc.createElement("obstacle");
-                ob.setAttribute("x", String.valueOf(obstacle.getX()));
-                ob.setAttribute("y", String.valueOf(obstacle.getY()));
+                ob.setAttribute("x", String.valueOf(obstacle.getLayoutX()));
+                ob.setAttribute("y", String.valueOf(obstacle.getLayoutY()));
+                if (obstacle instanceof Obstacle.horizontalObstacle){
+                    ob.setAttribute("orientation", "horizontal");
+                    ob.setAttribute("nbrOfBoxes",String.valueOf(((Obstacle.horizontalObstacle)obstacle).getNbrOfBoxes()));
+                }else{
+                    ob.setAttribute("orientation", "vertical");
+                    ob.setAttribute("nbrOfBoxes",String.valueOf(((Obstacle.verticalObstacle)obstacle).getNbrOfBoxes()));
+                }
+
                 doc.getElementsByTagName("obstacles").item(0).appendChild(ob);
             }
             //DEMONS
@@ -664,7 +647,13 @@ public class PartieControler implements Initializable {
             DOMSource source = new DOMSource(doc);
             StreamResult result = new StreamResult(new File(GameConfig.gameSaveFilePath));
             transformer.transform(source, result);
-            System.out.println("Game Saved !!!");
+
+
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Information");
+            alert.setHeaderText("Partie sauvgardé");
+            alert.show();
+
 
         } catch (ParserConfigurationException pce) {
             pce.printStackTrace();
@@ -677,7 +666,7 @@ public class PartieControler implements Initializable {
         }catch (Exception e){
             e.printStackTrace();
         }
-    }*/
+    }
 
 
     public void reprendre(){
@@ -703,7 +692,7 @@ public class PartieControler implements Initializable {
 
     private void demonIntersection(int k){
         //LORSQUE UN DEMON TOUCHE LE PISTOLET, LE PISTOLET S'EXPLOSE
-        demons.get(k).isMovingProperty.addListener((observable, oldValue, newValue) -> {
+        demons.get(k).yProperty().addListener((observable, oldValue, newValue) -> {
             if (demons.get(k).intersects(pistolet)) {
                 if (!pistolet.deadProperty.get()){
                     demons.get(k).stop();
@@ -785,15 +774,17 @@ public class PartieControler implements Initializable {
                 });
             }
         }
-            for (int j = 0;j<obstacles.size();j++){
-                int s = j;
-                //LORSQUE UN DEMON TOUCHE UN OBSTACLE IL CHANGE LA DIRECTION
-                demons.get(k).yProperty().addListener(new ChangeListener<Number>() {
-                    @Override
-                    public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-                        if (demons.get(k).intersects(obstacles.get(s).getBoundsInParent())) {
-                            if (demons.get(k).obstacleColisionIndex != s) {
-                                demons.get(k).obstacleColisionIndex = s;
+        //LORSQUE UN DEMON TOUCHE UN OBSTACLE IL CHANGE LA DIRECTION
+        for (int j = 0;j<obstacles.size();j++){
+            int s = j;
+
+            demons.get(k).yProperty().addListener(new ChangeListener<Number>() {
+                @Override
+                public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+                    if (demons.get(k).intersects(obstacles.get(s).getBoundsInParent())) {
+                        if (demons.get(k).obstacleColisionIndex != s) {
+                            demons.get(k).obstacleColisionIndex = s;
+                            if (!demons.get(k).changingDirection.get()) {
                                 obstacles.playEffect(s);
                                 if ((obstacles.get(s).getLayoutY() > demons.get(k).getY())) {//COLLISION AU DESSUS
                                     if (Math.abs(demons.get(k).getFitHeight() - (obstacles.get(s).getLayoutY() - demons.get(k).getY())) <= 4) {
@@ -818,8 +809,9 @@ public class PartieControler implements Initializable {
                             }
                         }
                     }
-                });
-            }
+                }
+            });
+        }
         //-------------------------------------------------------------------------------------------------------
     }
 
