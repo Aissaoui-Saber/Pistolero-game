@@ -2,6 +2,7 @@ package sample;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
@@ -10,6 +11,8 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class MenuControler implements Initializable {
+    @FXML
+    public ImageView logo;
     @FXML
     private VBox menuLabels;
 

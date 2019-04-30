@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?><partie>
-  <pistolet x="600.0" y="600.0"/>
-  <demons morts="1" total="0"><demon health="100.0" sexe="Female" x="838" y="123"/></demons>
-  <obstacles><obstacle nbrOfBoxes="5" orientation="horizontal" x="1260.0" y="210.0"/><obstacle nbrOfBoxes="1" orientation="vertical" x="810.0" y="300.0"/><obstacle nbrOfBoxes="2" orientation="horizontal" x="600.0" y="210.0"/><obstacle nbrOfBoxes="3" orientation="vertical" x="480.0" y="210.0"/></obstacles>
-  <balls restant="5" total="5"/>
+  <pistolet x="672.4285714285713" y="672.4285714285713"/>
+  <demons morts="12" total="1"><demon health="25.0" sexe="Male" x="202" y="563"/><demon health="100.0" sexe="Female" x="1154" y="-200"/><demon health="0.0" sexe="Male" x="793" y="-500"/><demon health="100.0" sexe="Male" x="1088" y="-197"/><demon health="100.0" sexe="Male" x="1149" y="-180"/><demon health="100.0" sexe="Male" x="915" y="541"/><demon health="100.0" sexe="Female" x="899" y="15"/><demon health="100.0" sexe="Female" x="403" y="-200"/><demon health="100.0" sexe="Female" x="964" y="-200"/><demon health="100.0" sexe="Female" x="357" y="-200"/><demon health="100.0" sexe="Female" x="1128" y="-199"/><demon health="100.0" sexe="Female" x="425" y="258"/></demons>
+  <obstacles><obstacle nbrOfBoxes="4" orientation="horizontal" x="1200.0" y="240.0"/><obstacle nbrOfBoxes="1" orientation="vertical" x="1110.0" y="300.0"/><obstacle nbrOfBoxes="5" orientation="horizontal" x="510.0" y="300.0"/><obstacle nbrOfBoxes="1" orientation="vertical" x="1230.0" y="300.0"/><obstacle nbrOfBoxes="1" orientation="horizontal" x="840.0" y="270.0"/><obstacle nbrOfBoxes="5" orientation="vertical" x="0.0" y="300.0"/><obstacle nbrOfBoxes="3" orientation="horizontal" x="810.0" y="210.0"/></obstacles>
+  <balls restant="189" total="200"/>
 </partie>
