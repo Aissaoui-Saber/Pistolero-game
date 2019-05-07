@@ -575,6 +575,7 @@ public class PartieControler implements Initializable {
             partieEnPause = new SimpleBooleanProperty(true);
             demonsCollisions = new DemonsCollisions();
             demonsIterator = 0;
+            Data.getData().backgroundMusic();
         } catch (Exception e) {
             e.printStackTrace();
         }
